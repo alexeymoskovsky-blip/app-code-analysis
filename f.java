@@ -1,84 +1,132 @@
-package com.qiyukf.unicorn.ui.viewholder;
+package com.qiyukf.nimlib.l;
 
-import com.qiyukf.unicorn.R;
-import com.qiyukf.unicorn.api.evaluation.EvaluationApi;
-import com.qiyukf.unicorn.api.evaluation.entry.EvaluationOpenEntry;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.graphics.Bitmap;
+import com.qiyukf.nimlib.sdk.NotificationFoldStyle;
+import com.qiyukf.nimlib.sdk.StatusBarNotificationConfig;
+import com.qiyukf.nimlib.sdk.msg.model.IMMessage;
+import com.qiyukf.nimlib.sdk.msg.model.SessionAckInfo;
+import java.util.List;
+import java.util.Map;
 
-/* JADX INFO: compiled from: MsgViewHolderEventEvaluator.java */
+/* JADX INFO: compiled from: NotificationShower.java */
 /* JADX INFO: loaded from: classes6.dex */
-public class f extends e {
-    private com.qiyukf.unicorn.h.a.f.c f;
-    private com.qiyukf.unicorn.h.a.c.c g;
+final class f {
+    private g a;
+    private NotificationFoldStyle b;
+    private NotificationManager d;
+    private Bitmap f;
+    private long e = 0;
+    private Context c = com.qiyukf.nimlib.c.d();
 
-    @Override // com.qiyukf.unicorn.ui.viewholder.e, com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
-    public void bindContentView() {
-        super.bindContentView();
-        com.qiyukf.unicorn.h.a.f.c cVar = (com.qiyukf.unicorn.h.a.f.c) this.message.getAttachment();
-        this.f = cVar;
-        this.g = cVar.i();
-        com.qiyukf.unicorn.n.f.a(this.a, this.f.a().toString(), (int) this.context.getResources().getDimension(R.dimen.ysf_bubble_content_rich_image_max_width), this.message.getSessionId());
-        if (this.f.e() == 0) {
-            this.c.setVisibility(8);
-            this.d.setVisibility(8);
-        } else {
-            this.c.setVisibility(0);
-            this.d.setVisibility(0);
-        }
-        if (this.f.c()) {
-            if (!this.f.b()) {
-                this.c.setVisibility(8);
-                this.d.setVisibility(8);
+    public f() {
+        StatusBarNotificationConfig statusBarNotificationConfig = com.qiyukf.nimlib.c.h().statusBarNotificationConfig;
+        if (statusBarNotificationConfig != null) {
+            if (statusBarNotificationConfig.notificationFoldStyle == null) {
+                statusBarNotificationConfig.notificationFoldStyle = NotificationFoldStyle.ALL;
             }
-            this.c.setText(this.context.getString(R.string.ysf_evaluation_modify));
-            c();
-        } else if (this.f.j() > 0) {
-            this.c.setText(this.context.getString(R.string.ysf_again_evaluation));
-            c();
-        } else {
+            this.b = statusBarNotificationConfig.notificationFoldStyle;
             b();
-            this.c.setText(R.string.ysf_immediately_evaluation);
         }
-        if (this.f.k()) {
-            this.c.setEnabled(false);
-            d();
-            this.c.setText(R.string.ysf_already_evaluation_str);
-            return;
-        }
-        this.c.setEnabled(true);
+        this.d = (NotificationManager) this.c.getSystemService("notification");
+        e.e(this.c);
     }
 
-    @Override // com.qiyukf.unicorn.ui.viewholder.e
-    public final void a() {
-        if (com.qiyukf.unicorn.c.h().d().c(this.message.getSessionId())) {
-            long jS = com.qiyukf.unicorn.d.c.s(String.valueOf(this.f.f()));
-            if (jS == 0 || System.currentTimeMillis() < jS + (this.g.f().longValue() * 60000)) {
-                if (this.g.m() == 2) {
-                    if (com.qiyukf.unicorn.a.a().b() != null) {
-                        com.qiyukf.unicorn.a.a();
-                        return;
-                    }
-                    if (EvaluationApi.getInstance().getOnEvaluationEventListener() != null) {
-                        EvaluationApi.OnEvaluationEventListener onEvaluationEventListener = EvaluationApi.getInstance().getOnEvaluationEventListener();
-                        EvaluationOpenEntry evaluationOpenEntry = new EvaluationOpenEntry();
-                        evaluationOpenEntry.setEvaluationEntryList(this.f.i().e());
-                        evaluationOpenEntry.setExchange(this.message.getSessionId());
-                        evaluationOpenEntry.setLastRemark(this.f.g());
-                        evaluationOpenEntry.setLastSource(this.f.d());
-                        evaluationOpenEntry.setSessionId(this.f.f());
-                        evaluationOpenEntry.setTitle(this.f.i().c());
-                        evaluationOpenEntry.setType(this.f.i().d());
-                        evaluationOpenEntry.setResolvedEnabled(this.f.i().k());
-                        evaluationOpenEntry.setResolvedRequired(this.f.i().l());
-                        onEvaluationEventListener.onEvaluationMessageClick(evaluationOpenEntry, this.context);
-                        return;
-                    }
-                    com.qiyukf.unicorn.n.t.b(R.string.ysf_custom_evaluation_page);
-                    return;
-                }
-                com.qiyukf.unicorn.c.h().d().a(this.context, this.message);
+    /* JADX INFO: renamed from: com.qiyukf.nimlib.l.f$1 */
+    /* JADX INFO: compiled from: NotificationShower.java */
+    public static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] a;
+
+        static {
+            int[] iArr = new int[NotificationFoldStyle.values().length];
+            a = iArr;
+            try {
+                iArr[NotificationFoldStyle.ALL.ordinal()] = 1;
+            } catch (NoSuchFieldError unused) {
+            }
+            try {
+                a[NotificationFoldStyle.EXPAND.ordinal()] = 2;
+            } catch (NoSuchFieldError unused2) {
+            }
+            try {
+                a[NotificationFoldStyle.CONTACT.ordinal()] = 3;
+            } catch (NoSuchFieldError unused3) {
+            }
+        }
+    }
+
+    private void b() {
+        int i = AnonymousClass1.a[this.b.ordinal()];
+        if (i == 1) {
+            this.a = new c(this.c);
+        } else if (i == 2) {
+            this.a = new j(this.c);
+        } else {
+            if (i != 3) {
                 return;
             }
-            com.qiyukf.unicorn.n.t.a(R.string.ysf_evaluation_time_out);
+            this.a = new b(this.c);
+        }
+    }
+
+    public final void a(NotificationFoldStyle notificationFoldStyle) {
+        NotificationFoldStyle notificationFoldStyle2 = this.b;
+        if (notificationFoldStyle2 == null && notificationFoldStyle == null) {
+            notificationFoldStyle = NotificationFoldStyle.ALL;
+        } else {
+            if (notificationFoldStyle == notificationFoldStyle2) {
+                return;
+            }
+            if (notificationFoldStyle == null) {
+                notificationFoldStyle = NotificationFoldStyle.ALL;
+            }
+        }
+        com.qiyukf.nimlib.c.h().statusBarNotificationConfig.notificationFoldStyle = notificationFoldStyle;
+        this.b = notificationFoldStyle;
+        a();
+        b();
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:232:0x005e  */
+    /* JADX WARN: Removed duplicated region for block: B:249:0x00b1  */
+    /* JADX WARN: Removed duplicated region for block: B:255:0x00ca  */
+    /* JADX WARN: Removed duplicated region for block: B:292:0x015d  */
+    /* JADX WARN: Removed duplicated region for block: B:324:0x0202  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void a(@androidx.annotation.NonNull com.qiyukf.nimlib.sdk.msg.model.IMMessage r21, java.util.Map<java.lang.String, com.qiyukf.nimlib.sdk.msg.model.IMMessage> r22, java.lang.String r23, int r24, boolean r25) {
+        /*
+            Method dump skipped, instruction units count: 920
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.qiyukf.nimlib.l.f.a(com.qiyukf.nimlib.sdk.msg.model.IMMessage, java.util.Map, java.lang.String, int, boolean):void");
+    }
+
+    public final void a() {
+        g gVar = this.a;
+        if (gVar != null) {
+            gVar.a(this.d, new i(0));
+        }
+    }
+
+    public final void a(List<SessionAckInfo> list) {
+        i iVar = new i(2);
+        iVar.a(list);
+        g gVar = this.a;
+        if (gVar != null) {
+            gVar.a(this.d, iVar);
+        }
+    }
+
+    private PendingIntent a(Map<String, IMMessage> map) {
+        try {
+            return this.a.a(map);
+        } catch (Throwable unused) {
+            return null;
         }
     }
 }

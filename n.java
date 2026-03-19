@@ -1,156 +1,105 @@
-package com.qiyukf.nimlib.biz.c.j;
+package com.qiyukf.unicorn.ui.viewholder.a;
 
-import android.os.SystemClock;
-import com.qiyukf.nimlib.n.e;
+import android.os.Handler;
+import android.widget.TextView;
+import com.facebook.internal.ServerProtocol;
+import com.qiyukf.nimlib.sdk.NIMClient;
+import com.qiyukf.nimlib.sdk.msg.MessageBuilder;
 import com.qiyukf.nimlib.sdk.msg.constant.SessionTypeEnum;
-import com.qiyukf.nimlib.sdk.msg.model.SessionAckInfo;
-import com.qiyukf.nimlib.session.MsgDBHelper;
-import com.qiyukf.nimlib.session.x;
-import com.qiyukf.nimlib.session.y;
-import java.util.ArrayList;
-import java.util.List;
+import com.qiyukf.nimlib.sdk.ysf.YsfService;
+import com.qiyukf.uikit.session.viewholder.MsgViewHolderBase;
+import com.qiyukf.unicorn.R;
+import com.qiyukf.unicorn.api.UICustomization;
+import com.qiyukf.unicorn.api.msg.MessageService;
+import com.qiyukf.unicorn.ui.botproductlist.BotProductDetailDoneDialog;
+import com.qiyukf.unicorn.ui.botproductlist.ProductAndOrderListDialog;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import org.json.JSONObject;
 
-/* JADX INFO: compiled from: SessionAckResponseHandler.java */
+/* JADX INFO: compiled from: TemplateHolderDrawerList.java */
 /* JADX INFO: loaded from: classes6.dex */
-public final class n extends com.qiyukf.nimlib.biz.c.i {
-    @Override // com.qiyukf.nimlib.biz.c.a
-    public final void a(com.qiyukf.nimlib.biz.e.a aVar) {
-        if ((aVar.e() || aVar.h() == 700) && com.qiyukf.nimlib.c.h().sessionReadAck) {
-            if (aVar instanceof com.qiyukf.nimlib.biz.e.g.h) {
-                com.qiyukf.nimlib.biz.e.g.h hVar = (com.qiyukf.nimlib.biz.e.g.h) aVar;
-                long jL = hVar.l();
-                com.qiyukf.nimlib.log.b.t("onLoginSyncSession syncTimeTag=".concat(String.valueOf(jL)));
-                Map<String, Long> mapJ = hVar.j();
-                Map<String, Long> mapK = hVar.k();
-                ArrayList arrayList = new ArrayList(mapJ.size() + mapK.size());
-                for (Map.Entry<String, Long> entry : mapJ.entrySet()) {
-                    arrayList.add(new y(SessionTypeEnum.P2P, entry.getKey(), entry.getValue().longValue()));
-                }
-                for (Map.Entry<String, Long> entry2 : mapK.entrySet()) {
-                    arrayList.add(new y(SessionTypeEnum.Team, entry2.getKey(), entry2.getValue().longValue()));
-                }
-                a(arrayList);
-                com.qiyukf.nimlib.biz.n.d(jL);
-                return;
+public class n extends i {
+    private com.qiyukf.unicorn.h.a.a.a.i a;
+    private TextView b;
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public int getContentResId() {
+        return R.layout.ysf_message_action_custom_layout;
+    }
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public void inflateContentView() {
+        this.b = (TextView) findViewById(R.id.ysf_tv_holder_drawer_list);
+    }
+
+    @Override // com.qiyukf.unicorn.ui.viewholder.a.i
+    public final void a() {
+        com.qiyukf.unicorn.h.a.a.a.i iVar = (com.qiyukf.unicorn.h.a.a.a.i) this.message.getAttachment();
+        this.a = iVar;
+        this.b.setText(iVar.d());
+        Map<String, Object> localExtension = this.message.getLocalExtension();
+        if (localExtension == null || localExtension.get("DRAWER_DIALOG_IS_OPEN_TAG") == null) {
+            Map<String, Object> localExtension2 = this.message.getLocalExtension();
+            if (localExtension2 == null) {
+                localExtension2 = new HashMap<>();
             }
-            if (aVar instanceof com.qiyukf.nimlib.biz.e.k.t) {
-                com.qiyukf.nimlib.biz.e.k.t tVar = (com.qiyukf.nimlib.biz.e.k.t) aVar;
-                SessionTypeEnum sessionTypeEnumJ = tVar.j();
-                String strK = tVar.k();
-                long jL2 = tVar.l();
-                y yVar = new y(sessionTypeEnumJ, strK, jL2);
-                ArrayList arrayList2 = new ArrayList(1);
-                arrayList2.add(yVar);
-                a(arrayList2);
-                com.qiyukf.nimlib.log.b.t("onOnlineSyncSessionAckNotify, sessionId=" + strK + ",time=" + jL2);
-                return;
+            localExtension2.put("DRAWER_DIALOG_IS_OPEN_TAG", ServerProtocol.DIALOG_RETURN_SCOPES_TRUE);
+            this.message.setLocalExtension(localExtension2);
+            ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(this.message, true);
+            Iterator<com.qiyukf.unicorn.h.a.c.f> it = this.a.f().iterator();
+            while (it.hasNext()) {
+                it.next().b("drawer_list");
             }
-            if (aVar instanceof com.qiyukf.nimlib.biz.e.k.c) {
-                com.qiyukf.nimlib.biz.e.k.c cVar = (com.qiyukf.nimlib.biz.e.k.c) aVar;
-                com.qiyukf.nimlib.biz.d.i.b bVar = (com.qiyukf.nimlib.biz.d.i.b) com.qiyukf.nimlib.biz.k.a().a(cVar);
-                if (bVar != null) {
-                    x.b(bVar.i(), bVar.j(), bVar.k());
-                    com.qiyukf.nimlib.log.b.t("session ack response, sessionId=" + bVar.i() + ", timetag=" + bVar.k());
+            final ProductAndOrderListDialog productAndOrderListDialog = new ProductAndOrderListDialog(this.context, this.a.f(), this.a.c(), this.a.e());
+            productAndOrderListDialog.setClickCallback(new BotProductDetailDoneDialog.ClickCallback() { // from class: com.qiyukf.unicorn.ui.viewholder.a.n.1
+                @Override // com.qiyukf.unicorn.ui.botproductlist.BotProductDetailDoneDialog.ClickCallback
+                public final void onDoneClick(com.qiyukf.unicorn.h.a.c.b bVar) {
+                    if ("url".equals(bVar.i())) {
+                        com.qiyukf.unicorn.c.f().onMessageItemClickListener.onURLClicked(((com.qiyukf.uikit.common.a.f) n.this).context, bVar.j());
+                        return;
+                    }
+                    if ("block".equals(bVar.i())) {
+                        com.qiyukf.unicorn.b.b.c cVar = new com.qiyukf.unicorn.b.b.c();
+                        cVar.fromJson(bVar.a());
+                        cVar.a(true);
+                        cVar.b(n.this.b().toString());
+                        com.qiyukf.unicorn.b.b bVar2 = new com.qiyukf.unicorn.b.b();
+                        bVar2.a(cVar.j());
+                        bVar2.b(cVar.k());
+                        bVar2.a(cVar.c());
+                        cVar.a(bVar2);
+                        MessageService.sendMessage(MessageBuilder.createCustomMessage(((MsgViewHolderBase) n.this).message.getSessionId(), SessionTypeEnum.Ysf, cVar));
+                        productAndOrderListDialog.cancel();
+                    }
                 }
-                com.qiyukf.nimlib.biz.c.i.a(cVar, null);
-                return;
-            }
-            if (aVar instanceof com.qiyukf.nimlib.biz.e.k.b) {
-                com.qiyukf.nimlib.biz.e.k.b bVar2 = (com.qiyukf.nimlib.biz.e.k.b) aVar;
-                final ArrayList arrayListD = com.qiyukf.nimlib.n.e.d(bVar2.j(), new n$$ExternalSyntheticLambda0());
-                com.qiyukf.nimlib.biz.d.i.a aVar2 = (com.qiyukf.nimlib.biz.d.i.a) com.qiyukf.nimlib.biz.k.a().a(bVar2);
-                if (aVar2 != null) {
-                    com.qiyukf.nimlib.n.e.g(com.qiyukf.nimlib.n.e.e(aVar2.i(), new e.a() { // from class: com.qiyukf.nimlib.biz.c.j.n$$ExternalSyntheticLambda1
-                        @Override // com.qiyukf.nimlib.n.e.a
-                        public final Object transform(Object obj) {
-                            return n.a(arrayListD, (com.qiyukf.nimlib.push.packet.b.c) obj);
+            });
+            new Handler().postDelayed(new Runnable() { // from class: com.qiyukf.unicorn.ui.viewholder.a.n.2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    if (((com.qiyukf.uikit.common.a.f) n.this).context != null) {
+                        try {
+                            productAndOrderListDialog.show();
+                        } catch (Exception unused) {
                         }
-                    }), new e.a() { // from class: com.qiyukf.nimlib.biz.c.j.n$$ExternalSyntheticLambda2
-                        @Override // com.qiyukf.nimlib.n.e.a
-                        public final Object transform(Object obj) {
-                            return n.a((com.qiyukf.nimlib.push.packet.b.c) obj);
-                        }
-                    });
-                    com.qiyukf.nimlib.biz.c.i.a(bVar2, arrayListD, 200);
+                    }
                 }
-            }
+            }, 500L);
         }
+    }
+
+    @Override // com.qiyukf.unicorn.ui.viewholder.a.i
+    public final int c() {
+        int i;
+        UICustomization uICustomization = com.qiyukf.unicorn.c.f().uiCustomization;
+        return (uICustomization == null || (i = uICustomization.msgRobotItemBackgroundLeft) <= 0) ? R.drawable.ysf_msg_back_left_selector : i;
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static /* synthetic */ Boolean a(ArrayList arrayList, com.qiyukf.nimlib.push.packet.b.c cVar) {
-        if (cVar == null) {
-            return null;
-        }
-        y yVarA = y.a(cVar);
-        final String sessionId = yVarA.getSessionId();
-        final SessionTypeEnum sessionType = yVarA.getSessionType();
-        return Boolean.valueOf(!com.qiyukf.nimlib.n.e.c(arrayList, new e.a() { // from class: com.qiyukf.nimlib.biz.c.j.n$$ExternalSyntheticLambda3
-            @Override // com.qiyukf.nimlib.n.e.a
-            public final Object transform(Object obj) {
-                return n.a(sessionId, sessionType, (SessionAckInfo) obj);
-            }
-        }));
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public static /* synthetic */ Boolean a(String str, SessionTypeEnum sessionTypeEnum, SessionAckInfo sessionAckInfo) {
-        return Boolean.valueOf(sessionAckInfo != null && str.equals(sessionAckInfo.getSessionId()) && sessionTypeEnum == sessionAckInfo.getSessionType());
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public static /* synthetic */ Boolean a(com.qiyukf.nimlib.push.packet.b.c cVar) {
-        if (cVar == null) {
-            return Boolean.TRUE;
-        }
-        y yVarA = y.a(cVar);
-        x.b(yVarA.getSessionId(), yVarA.getSessionType(), yVarA.getTime());
-        return Boolean.TRUE;
-    }
-
-    private static void a(List<SessionAckInfo> list) {
-        boolean z;
-        for (SessionAckInfo sessionAckInfo : list) {
-            com.qiyukf.nimlib.log.b.t("onSessionAck" + sessionAckInfo.toString());
-            String sessionId = sessionAckInfo.getSessionId();
-            SessionTypeEnum sessionType = sessionAckInfo.getSessionType();
-            if (x.a(sessionId, sessionType, x.b(sessionId, sessionType, sessionAckInfo.getTime()))) {
-                String sessionId2 = sessionAckInfo.getSessionId();
-                SessionTypeEnum sessionType2 = sessionAckInfo.getSessionType();
-                long jElapsedRealtime = SystemClock.elapsedRealtime();
-                int iB = x.b(sessionId2, sessionType2);
-                com.qiyukf.nimlib.session.s sVarQueryRecentContact = MsgDBHelper.queryRecentContact(sessionId2, sessionType2);
-                int unreadCount = (sVarQueryRecentContact == null || iB <= sVarQueryRecentContact.getUnreadCount()) ? iB : sVarQueryRecentContact.getUnreadCount();
-                if (sVarQueryRecentContact == null || unreadCount == sVarQueryRecentContact.getUnreadCount()) {
-                    z = false;
-                } else {
-                    MsgDBHelper.updateRecentUnreadNum(sessionId2, sessionType2, unreadCount);
-                    sVarQueryRecentContact.a(unreadCount);
-                    com.qiyukf.nimlib.session.k.a(sVarQueryRecentContact);
-                    com.qiyukf.nimlib.i.b.a(sVarQueryRecentContact);
-                    z = true;
-                }
-                long jElapsedRealtime2 = SystemClock.elapsedRealtime() - jElapsedRealtime;
-                StringBuilder sb = new StringBuilder();
-                sb.append("recalculate unread count, sessionId=");
-                sb.append(sessionId2);
-                sb.append(", type=");
-                sb.append(sessionType2);
-                sb.append(", recalculate unread=");
-                sb.append(iB);
-                sb.append(", recent unread=");
-                sb.append(sVarQueryRecentContact != null ? sVarQueryRecentContact.getUnreadCount() : 0);
-                sb.append(", output unread=");
-                sb.append(unreadCount);
-                sb.append(", updateAndNotify=");
-                sb.append(z);
-                sb.append(", cost time=");
-                sb.append(jElapsedRealtime2);
-                sb.append("ms");
-                com.qiyukf.nimlib.log.c.b.a.H(sb.toString());
-            }
-        }
-        com.qiyukf.nimlib.l.d.a(list);
+    public JSONObject b() {
+        JSONObject jSONObject = new JSONObject();
+        com.qiyukf.nimlib.n.j.a(jSONObject, "MSG_CLIENT_ID_TAG", this.message.getUuid());
+        return jSONObject;
     }
 }
