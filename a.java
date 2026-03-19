@@ -1,1039 +1,1284 @@
-package com.qiyukf.uikit.session.module.a;
+package com.qiyukf.unicorn.k;
 
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Handler;
+import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.collection.LongSparseArray;
+import androidx.fragment.app.Fragment;
 import com.qiyukf.module.log.base.AbsUnicornLog;
-import com.qiyukf.nimlib.n.w;
+import com.qiyukf.nimlib.database.f;
+import com.qiyukf.nimlib.n.j;
 import com.qiyukf.nimlib.sdk.NIMClient;
-import com.qiyukf.nimlib.sdk.Observer;
 import com.qiyukf.nimlib.sdk.RequestCallback;
 import com.qiyukf.nimlib.sdk.RequestCallbackWrapper;
 import com.qiyukf.nimlib.sdk.msg.MessageBuilder;
 import com.qiyukf.nimlib.sdk.msg.MsgService;
-import com.qiyukf.nimlib.sdk.msg.MsgServiceObserve;
-import com.qiyukf.nimlib.sdk.msg.attachment.AudioAttachment;
-import com.qiyukf.nimlib.sdk.msg.attachment.FileAttachment;
-import com.qiyukf.nimlib.sdk.msg.constant.AttachStatusEnum;
 import com.qiyukf.nimlib.sdk.msg.constant.MsgDirectionEnum;
 import com.qiyukf.nimlib.sdk.msg.constant.MsgStatusEnum;
-import com.qiyukf.nimlib.sdk.msg.constant.MsgTypeEnum;
 import com.qiyukf.nimlib.sdk.msg.constant.SessionTypeEnum;
-import com.qiyukf.nimlib.sdk.msg.model.AttachmentProgress;
-import com.qiyukf.nimlib.sdk.msg.model.CustomNotification;
 import com.qiyukf.nimlib.sdk.msg.model.IMMessage;
-import com.qiyukf.nimlib.sdk.msg.model.QueryDirectionEnum;
 import com.qiyukf.nimlib.sdk.ysf.YsfService;
-import com.qiyukf.nimlib.session.MsgDBHelper;
-import com.qiyukf.uikit.b.b;
-import com.qiyukf.uikit.common.a.e;
-import com.qiyukf.uikit.common.a.f;
-import com.qiyukf.uikit.common.fragment.TFragment;
-import com.qiyukf.uikit.common.ui.listview.AutoRefreshListView;
-import com.qiyukf.uikit.common.ui.listview.ListViewUtil;
-import com.qiyukf.uikit.common.ui.listview.MessageListView;
-import com.qiyukf.uikit.session.helper.PickImageAndVideoHelper;
-import com.qiyukf.uikit.session.helper.QuoteMsgHelper;
-import com.qiyukf.uikit.session.helper.SendImageHelper;
-import com.qiyukf.uikit.session.helper.WorkSheetHelper;
-import com.qiyukf.uikit.session.module.a.b;
-import com.qiyukf.uikit.session.viewholder.MsgViewHolderBase;
-import com.qiyukf.uikit.session.viewholder.MsgViewHolderFactory;
 import com.qiyukf.unicorn.R;
-import com.qiyukf.unicorn.api.ImageLoaderListener;
-import com.qiyukf.unicorn.api.UICustomization;
-import com.qiyukf.unicorn.api.Unicorn;
-import com.qiyukf.unicorn.c;
-import com.qiyukf.unicorn.h.a.a.a.j;
-import com.qiyukf.unicorn.h.a.a.a.x;
-import com.qiyukf.unicorn.h.a.d.ag;
-import com.qiyukf.unicorn.h.a.d.az;
-import com.qiyukf.unicorn.h.a.f.ac;
-import com.qiyukf.unicorn.h.a.f.q;
-import com.qiyukf.unicorn.n.aa;
-import com.qiyukf.unicorn.n.e.d;
-import com.qiyukf.unicorn.n.g;
-import com.qiyukf.unicorn.n.p;
+import com.qiyukf.unicorn.api.evaluation.EvaluationApi;
+import com.qiyukf.unicorn.api.evaluation.entry.EvaluationOpenEntry;
+import com.qiyukf.unicorn.f.h;
+import com.qiyukf.unicorn.f.p;
+import com.qiyukf.unicorn.h.a.d.g;
+import com.qiyukf.unicorn.h.a.d.i;
+import com.qiyukf.unicorn.h.a.f.x;
+import com.qiyukf.unicorn.k.d;
 import com.qiyukf.unicorn.n.t;
-import com.qiyukf.unicorn.ui.fragment.TranslateFragment;
-import com.qiyukf.unicorn.ui.viewholder.a.o;
-import com.qiyukf.unicorn.widget.ItemBlackPopupWindow;
-import com.qiyukf.unicorn.widget.dialog.UnicornDialog;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import com.qiyukf.unicorn.ui.evaluate.c;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-/* JADX INFO: compiled from: MessageListPanel.java */
+/* JADX INFO: compiled from: EvaluationManager.java */
 /* JADX INFO: loaded from: classes6.dex */
-public final class a implements e {
-    public volatile boolean a;
-    private boolean b;
-    private com.qiyukf.uikit.session.module.a c;
-    private View d;
-    private MessageListView e;
-    private List<IMMessage> f;
-    private com.qiyukf.uikit.session.module.a.b g;
-    private ImageView h;
-    private Handler i;
-    private View j;
-    private TextView k;
-    private ImageView l;
-    private ImageView m;
-    private boolean n;
-    private boolean o;
-    private boolean p;
-    private boolean q;
-    private int r;
-    private SendImageHelper.Callback s;
-    private WorkSheetHelper t;
-    private Observer<CustomNotification> u;
-    private PickImageAndVideoHelper.VideoMessageHelperListener v;
-    private Observer<IMMessage> w;
-    private Observer<AttachmentProgress> x;
-    private b.a y;
-    private Runnable z;
+public final class a {
+    private Fragment a;
+    private String b;
+    private Map<String, IMMessage> c = new HashMap();
+    private Map<String, Long> d = new HashMap();
+    private Map<String, Boolean> e = new HashMap();
+    private LongSparseArray<RequestCallbackWrapper<String>> f = new LongSparseArray<>();
+    private LongSparseArray<RequestCallbackWrapper<String>> g = new LongSparseArray<>();
+    private com.qiyukf.unicorn.ui.evaluate.c h;
+    private boolean i;
 
-    @Override // com.qiyukf.uikit.common.a.e
-    public final boolean b() {
-        return false;
+    public static void a(IMMessage iMMessage) {
+        String sessionId = iMMessage.getSessionId();
+        int iL = com.qiyukf.unicorn.d.c.l(sessionId);
+        if (iL == -1 || iL == 4) {
+            return;
+        }
+        MsgDirectionEnum direct = iMMessage.getDirect();
+        if ((direct == MsgDirectionEnum.Out && iL % 2 == 0) || (direct == MsgDirectionEnum.In && iL % 2 == 1)) {
+            com.qiyukf.unicorn.d.c.a(sessionId, iL + 1);
+        }
     }
 
-    public a(com.qiyukf.uikit.session.module.a aVar, View view) {
-        this(aVar, view, (byte) 0);
+    public final void a(String str, String str2, i iVar) {
+        if (a(str2) == null) {
+            return;
+        }
+        if (com.qiyukf.unicorn.d.c.m(str2) == 1 || a(str2).g()) {
+            a(str, System.currentTimeMillis(), str2, iVar.b(), iVar.c(), iVar.a(), iVar.d(), iVar.e());
+        }
     }
 
-    private a(com.qiyukf.uikit.session.module.a aVar, View view, byte b2) {
-        int i;
-        this.b = true;
-        this.a = false;
-        this.p = false;
-        this.q = false;
-        this.r = 0;
-        this.u = new Observer<CustomNotification>() { // from class: com.qiyukf.uikit.session.module.a.a.8
-            @Override // com.qiyukf.nimlib.sdk.Observer
-            public final /* synthetic */ void onEvent(CustomNotification customNotification) {
-                CustomNotification customNotification2 = customNotification;
-                if (TextUtils.equals(a.this.c.c, customNotification2.getSessionId()) && customNotification2.getSessionType() == SessionTypeEnum.Ysf) {
-                    a.this.a(customNotification2);
+    public final void a(Fragment fragment, String str) {
+        this.a = fragment;
+        this.b = str;
+        if (this.c.containsKey(str)) {
+            IMMessage iMMessageRemove = this.c.remove(str);
+            if (this.h == null && iMMessageRemove != null && (iMMessageRemove.getAttachment() instanceof com.qiyukf.unicorn.h.a.f.c)) {
+                a(fragment.getContext(), iMMessageRemove);
+            }
+        }
+    }
+
+    public final void a() {
+        this.a = null;
+        this.b = null;
+    }
+
+    public final void a(com.qiyukf.unicorn.ui.evaluate.c cVar) {
+        this.h = cVar;
+    }
+
+    public final void b() {
+        com.qiyukf.unicorn.ui.evaluate.c cVar = this.h;
+        if (cVar == null || !cVar.isShowing() || this.a == null) {
+            return;
+        }
+        this.h.cancel();
+    }
+
+    public final void a(String str, long j, String str2, long j2, boolean z, int i, String str3, long j3) {
+        if (f.a().b()) {
+            com.qiyukf.unicorn.h.a.c.c cVarA = a(str2);
+            if (cVarA.m() == 1) {
+                g gVar = new g();
+                gVar.a(-1);
+                gVar.a(a(str2));
+                if (gVar.e().b() != null) {
+                    j.a(gVar.e().b(), "richTextInvite", str3);
                 }
-            }
-        };
-        this.v = new PickImageAndVideoHelper.VideoMessageHelperListener() { // from class: com.qiyukf.uikit.session.module.a.a.9
-            @Override // com.qiyukf.uikit.session.helper.PickImageAndVideoHelper.VideoMessageHelperListener
-            public final void onVideoPicked(File file, String str) {
-                MediaPlayer mediaPlayerA = a.this.a(file);
-                a.this.c.e.sendMessage(MessageBuilder.createVideoMessage(a.this.c.c, SessionTypeEnum.Ysf, file, mediaPlayerA == null ? 0L : mediaPlayerA.getDuration(), mediaPlayerA == null ? 0 : mediaPlayerA.getVideoWidth(), mediaPlayerA == null ? 0 : mediaPlayerA.getVideoHeight(), file.getName()), false);
-            }
-        };
-        this.w = new Observer<IMMessage>() { // from class: com.qiyukf.uikit.session.module.a.a.10
-            @Override // com.qiyukf.nimlib.sdk.Observer
-            public final /* synthetic */ void onEvent(IMMessage iMMessage) {
-                IMMessage iMMessage2 = iMMessage;
-                if (a.this.c(iMMessage2)) {
-                    a.b(a.this, iMMessage2);
-                }
-            }
-        };
-        this.x = new Observer<AttachmentProgress>() { // from class: com.qiyukf.uikit.session.module.a.a.11
-            @Override // com.qiyukf.nimlib.sdk.Observer
-            public final /* synthetic */ void onEvent(AttachmentProgress attachmentProgress) {
-                a.a(a.this, attachmentProgress);
-            }
-        };
-        this.z = new Runnable() { // from class: com.qiyukf.uikit.session.module.a.a.4
-            @Override // java.lang.Runnable
-            public final void run() {
-                a.this.j.setVisibility(8);
-            }
-        };
-        this.c = aVar;
-        this.d = view;
-        this.n = false;
-        this.o = false;
-        this.f = new ArrayList();
-        com.qiyukf.uikit.session.module.a.b bVar = new com.qiyukf.uikit.session.module.a.b(this.c.a, this.f, this);
-        this.g = bVar;
-        bVar.a(new b(this, (byte) 0));
-        this.h = (ImageView) this.d.findViewById(R.id.message_activity_background);
-        MessageListView messageListView = (MessageListView) this.d.findViewById(R.id.messageListView);
-        this.e = messageListView;
-        messageListView.requestDisallowInterceptTouchEvent(true);
-        if (this.n && !this.o) {
-            this.e.setMode(AutoRefreshListView.Mode.BOTH);
-        } else {
-            this.e.setMode(AutoRefreshListView.Mode.START);
-        }
-        this.e.setOverScrollMode(2);
-        this.e.setAdapter((BaseAdapter) this.g);
-        this.e.setListViewEventListener(new MessageListView.OnListViewEventListener() { // from class: com.qiyukf.uikit.session.module.a.a.5
-            @Override // com.qiyukf.uikit.common.ui.listview.MessageListView.OnListViewEventListener
-            public final void onListViewStartScroll() {
-                a.this.c.e.shouldCollapseInputPanel();
-            }
-
-            @Override // com.qiyukf.uikit.common.ui.listview.MessageListView.OnListViewEventListener
-            public final void onSizeChanged(int i2, int i3, int i4, int i5) {
-                if (i5 - i3 > p.d() + p.e() || a.this.g()) {
-                    ListViewUtil.scrollToBottom(a.this.e);
-                }
-            }
-
-            @Override // com.qiyukf.uikit.common.ui.listview.MessageListView.OnListViewEventListener
-            public final void onListViewTouched() {
-                g.a(a.this.c.b);
-            }
-        });
-        this.e.setOnRefreshListener(new C0168a(this.o));
-        this.i = new Handler();
-        b(true);
-        this.j = this.d.findViewById(R.id.play_audio_mode_tips_bar);
-        this.k = (TextView) this.d.findViewById(R.id.play_audio_mode_tips_label);
-        this.l = (ImageView) this.d.findViewById(R.id.ysf_play_audio_mode_tip_close);
-        this.m = (ImageView) this.d.findViewById(R.id.play_audio_mode_tips_indicator);
-        this.l.setOnClickListener(new View.OnClickListener() { // from class: com.qiyukf.uikit.session.module.a.a.1
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view2) {
-                if (a.this.j != null) {
-                    a.this.j.setVisibility(8);
-                }
-            }
-        });
-        UICustomization uICustomization = c.f().uiCustomization;
-        if (uICustomization != null && (i = uICustomization.msgListViewDividerHeight) > 0) {
-            this.e.setDividerHeight(i);
-        }
-        if (p.b(this.c.a)) {
-            this.e.setPadding(p.d(), 0, p.d(), 0);
-        }
-    }
-
-    public final void c() {
-        this.i.removeCallbacks(null);
-        b(false);
-    }
-
-    public final void a(com.qiyukf.uikit.session.module.a aVar) {
-        this.c = aVar;
-        this.f.clear();
-        this.e.setOnRefreshListener(new C0168a(this.o));
-    }
-
-    public final void a(Configuration configuration) {
-        if (p.f()) {
-            if (configuration.orientation == 2) {
-                this.e.setPadding(p.d(), 0, p.d(), 0);
-            } else {
-                this.e.setPadding(0, 0, 0, 0);
-            }
-        }
-    }
-
-    public final void d() {
-        this.c.a.runOnUiThread(new Runnable() { // from class: com.qiyukf.uikit.session.module.a.a.6
-            @Override // java.lang.Runnable
-            public final void run() {
-                a.this.g.notifyDataSetChanged();
-            }
-        });
-    }
-
-    public final void e() {
-        this.q = true;
-    }
-
-    public final void f() {
-        this.q = false;
-    }
-
-    public final boolean g() {
-        return ListViewUtil.isAtBottom(this.e);
-    }
-
-    public final void h() {
-        a(false, false);
-    }
-
-    public final void i() {
-        ListViewUtil.smoothScrollToPosition(this.e, r0.getAdapter().getCount() - 1);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void a(final boolean z, final boolean z2) {
-        this.i.postDelayed(new Runnable() { // from class: com.qiyukf.uikit.session.module.a.a.7
-            @Override // java.lang.Runnable
-            public final void run() {
-                if (z) {
-                    ListViewUtil.smoothScrollToPositionFromTop(a.this.e, a.this.g.getCount(), 0, z2 ? 500 : 100);
-                } else {
-                    ListViewUtil.scrollToBottom(a.this.e);
-                }
-            }
-        }, 10L);
-    }
-
-    public final void a(List<IMMessage> list) {
-        ArrayList arrayList = new ArrayList(list.size());
-        boolean z = false;
-        int i = 0;
-        for (IMMessage iMMessage : list) {
-            if (c(iMMessage)) {
-                this.f.add(iMMessage);
-                arrayList.add(iMMessage);
-                i++;
-                com.qiyukf.nimlib.log.c.b.a.d("MessageListPanel", "onIncomingMessage: add message " + iMMessage.getUuid());
-                z = true;
-            }
-            if (iMMessage.getAttachment() instanceof j) {
-                o.b(iMMessage.getUuid());
-            }
-        }
-        k();
-        if (z) {
-            this.g.notifyDataSetChanged();
-        }
-        this.g.a(arrayList, false, true);
-        if (i > 0) {
-            a(true, false);
-        }
-        if (c.h().p(this.c.c) == null || c.h().g(this.c.c) != 0 || this.q) {
-            return;
-        }
-        ac acVar = new ac();
-        acVar.a(String.valueOf(c.h().d(this.c.c)));
-        com.qiyukf.unicorn.k.c.a(acVar, list.get(0) != null ? list.get(0).getSessionId() : this.c.c);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void k() {
-        int i = 0;
-        for (int size = this.g.getItems().size() - 1; size >= 0; size--) {
-            if ((this.g.getItems().get(size).getAttachment() instanceof ag) && (i = i + 1) >= 2) {
-                this.g.getItems().remove(size);
-            }
-        }
-    }
-
-    public final void a(CustomNotification customNotification) {
-        List<IMMessage> list;
-        com.qiyukf.unicorn.h.a.b attachStr = com.qiyukf.unicorn.h.a.b.parseAttachStr(customNotification.getContent());
-        if (attachStr == null || attachStr.getCmdId() != 2) {
-            return;
-        }
-        com.qiyukf.unicorn.h.a.d.a aVar = (com.qiyukf.unicorn.h.a.d.a) attachStr;
-        if (aVar.b() == 200 && (this.a || com.qiyukf.unicorn.d.c.w(this.c.c) != aVar.f())) {
-            com.qiyukf.unicorn.d.c.d(this.c.c, aVar.f());
-            return;
-        }
-        if (this.a || (list = this.f) == null || list.size() != 0) {
-            return;
-        }
-        AutoRefreshListView.OnRefreshListener refreshListener = this.e.getRefreshListener();
-        this.a = true;
-        refreshListener.onRefreshFromStart(0);
-    }
-
-    public final void a(int i, int i2, Intent intent) {
-        WorkSheetHelper workSheetHelper;
-        if (i2 != -1) {
-            return;
-        }
-        if (i == 1) {
-            PickImageAndVideoHelper.onCaptureVideoResult(intent, this.v);
-            return;
-        }
-        if (i == 2) {
-            if (c.f().isUseSAF) {
-                PickImageAndVideoHelper.onPickVideoResult(this.c.a, intent, this.v);
-                return;
-            } else {
-                PickImageAndVideoHelper.onSelectLocalVideoResult(intent, this.v);
+                gVar.e().b(str3);
+                gVar.a("android");
+                gVar.a(j2);
+                gVar.b(i);
+                gVar.b(j3);
+                com.qiyukf.nimlib.session.d dVarA = com.qiyukf.nimlib.ysf.a.a(str, str2, SessionTypeEnum.Ysf, (String) null, gVar, j);
+                dVarA.setStatus(MsgStatusEnum.success);
+                com.qiyukf.nimlib.ysf.b.a(dVarA);
                 return;
             }
-        }
-        if (i == 8) {
-            SendImageHelper.onPickImageActivityResult(this.c.b, intent, 9, this.s);
-            return;
-        }
-        if (i == 9) {
-            SendImageHelper.onPreviewImageActivityResult(this.c.b, intent, i, 8, this.s);
-            return;
-        }
-        if (i != 17) {
-            if (i == 18 && (workSheetHelper = this.t) != null) {
-                workSheetHelper.onResultWorkSheet(18, intent);
-                return;
+            com.qiyukf.unicorn.h.a.f.c cVar = new com.qiyukf.unicorn.h.a.f.c();
+            cVar.b(-1);
+            cVar.a(a(str2));
+            if (cVar.i().b() != null) {
+                j.a(cVar.i().b(), "richTextInvite", str3);
             }
-            return;
-        }
-        WorkSheetHelper workSheetHelper2 = this.t;
-        if (workSheetHelper2 != null) {
-            workSheetHelper2.onResultWorkSheet(17, intent);
-        }
-    }
-
-    public final void a(IMMessage iMMessage) {
-        this.f.add(iMMessage);
-        ArrayList arrayList = new ArrayList(1);
-        arrayList.add(iMMessage);
-        this.g.a(arrayList, false, true);
-        this.g.notifyDataSetChanged();
-        if (this.q) {
-            this.r++;
-        }
-        ListViewUtil.scrollToBottom(this.e);
-    }
-
-    @Override // com.qiyukf.uikit.common.a.e
-    public final int a() {
-        return MsgViewHolderFactory.getViewTypeCount();
-    }
-
-    @Override // com.qiyukf.uikit.common.a.e
-    public final Class<? extends f> a(int i) {
-        return MsgViewHolderFactory.getViewHolderByType(this.f.get(i));
-    }
-
-    private void b(boolean z) {
-        ((MsgServiceObserve) NIMClient.getService(MsgServiceObserve.class)).observeCustomNotification(this.u, z);
-        MsgServiceObserve msgServiceObserve = (MsgServiceObserve) NIMClient.getService(MsgServiceObserve.class);
-        msgServiceObserve.observeMsgStatus(this.w, z);
-        msgServiceObserve.observeAttachmentProgress(this.x, z);
-        if (z) {
-            l();
-        } else {
-            m();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public boolean c(IMMessage iMMessage) {
-        return iMMessage.getSessionType() == this.c.d && iMMessage.getSessionId() != null && iMMessage.getSessionId().equals(this.c.c);
-    }
-
-    private void c(final int i) {
-        this.c.a.runOnUiThread(new Runnable() { // from class: com.qiyukf.uikit.session.module.a.a.12
-            @Override // java.lang.Runnable
-            public final void run() {
-                if (i < 0) {
-                    return;
-                }
-                Object viewHolderByIndex = ListViewUtil.getViewHolderByIndex(a.this.e, i);
-                if (viewHolderByIndex instanceof MsgViewHolderBase) {
-                    ((MsgViewHolderBase) viewHolderByIndex).refreshCurrentItem();
-                }
+            cVar.i().b(str3);
+            cVar.a("android");
+            cVar.a(j2);
+            cVar.c(i);
+            if (j3 != 0) {
+                cVar.a(Long.valueOf(j3));
             }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public int b(String str) {
-        for (int i = 0; i < this.f.size(); i++) {
-            if (TextUtils.equals(this.f.get(i).getUuid(), str)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public final void a(String str, int i) {
-        if (com.qiyukf.uikit.a.c(str)) {
-            com.qiyukf.uikit.a.a(str, p.a(), p.b(), new ImageLoaderListener() { // from class: com.qiyukf.uikit.session.module.a.a.2
-                @Override // com.qiyukf.unicorn.api.ImageLoaderListener
-                public final void onLoadFailed(Throwable th) {
-                }
-
-                @Override // com.qiyukf.unicorn.api.ImageLoaderListener
-                public final void onLoadComplete(@NonNull Bitmap bitmap) {
-                    a.this.h.setImageBitmap(bitmap);
-                }
-            });
-        } else if (i != 0) {
-            this.h.setBackgroundColor(i);
-        }
-    }
-
-    /* JADX INFO: renamed from: com.qiyukf.uikit.session.module.a.a$a, reason: collision with other inner class name */
-    /* JADX INFO: compiled from: MessageListPanel.java */
-    public class C0168a implements AutoRefreshListView.OnRefreshListener {
-        private boolean d;
-        private QueryDirectionEnum b = null;
-        private boolean e = true;
-        private RequestCallback<List<IMMessage>> f = new RequestCallbackWrapper<List<IMMessage>>() { // from class: com.qiyukf.uikit.session.module.a.a.a.1
-            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
-            public final /* synthetic */ void onResult(int i, List<IMMessage> list, Throwable th) {
-                List<IMMessage> list2 = list;
-                if (list2 != null) {
-                    if (C0168a.a(C0168a.this)) {
-                        if (!a.this.a && !a.this.b && !c.f().isDefaultLoadMsg && list2.size() != 0) {
-                            com.qiyukf.unicorn.h.a.f.b bVar = new com.qiyukf.unicorn.h.a.f.b();
-                            bVar.a(a.this.c.a.getString(R.string.ysf_last_message_history));
-                            IMMessage iMMessageCreateCustomMessage = MessageBuilder.createCustomMessage(com.qiyukf.nimlib.c.q(), SessionTypeEnum.Ysf, bVar);
-                            iMMessageCreateCustomMessage.setStatus(MsgStatusEnum.success);
-                            list2.add(iMMessageCreateCustomMessage);
-                        }
-                        a.this.a = true;
-                        C0168a.a(C0168a.this, list2);
-                        return;
-                    }
-                    C0168a.a(C0168a.this, new ArrayList());
-                }
-            }
-        };
-        private IMMessage c = null;
-
-        public C0168a(boolean z) {
-            this.d = z;
+            com.qiyukf.nimlib.session.d dVarA2 = com.qiyukf.nimlib.ysf.a.a(str, str2, SessionTypeEnum.Ysf, (String) null, cVar, j);
+            com.qiyukf.nimlib.ysf.b.a(dVarA2);
             if (z) {
-                a();
-            } else {
-                a(QueryDirectionEnum.QUERY_OLD, 0);
-            }
-        }
-
-        private void a(QueryDirectionEnum queryDirectionEnum, int i) {
-            a.this.b = i == 0;
-            this.b = queryDirectionEnum;
-            a.this.e.onRefreshStart(queryDirectionEnum == QueryDirectionEnum.QUERY_NEW ? AutoRefreshListView.Mode.END : AutoRefreshListView.Mode.START);
-            if (com.qiyukf.nimlib.database.f.a().c()) {
-                ((MsgService) NIMClient.getService(MsgService.class)).queryMessageListEx(b(), queryDirectionEnum, 20, true).setCallback(this.f);
-            }
-        }
-
-        private void a() {
-            this.b = QueryDirectionEnum.QUERY_OLD;
-            ((MsgService) NIMClient.getService(MsgService.class)).pullMessageHistory(b(), 20, true).setCallback(this.f);
-        }
-
-        private IMMessage b() {
-            if (a.this.f.size() != 0) {
-                return (IMMessage) a.this.f.get(this.b == QueryDirectionEnum.QUERY_NEW ? a.this.f.size() - 1 : 0);
-            }
-            IMMessage iMMessage = this.c;
-            return iMMessage == null ? MessageBuilder.createEmptyMessage(a.this.c.c, a.this.c.d, 0L) : iMMessage;
-        }
-
-        @Override // com.qiyukf.uikit.common.ui.listview.AutoRefreshListView.OnRefreshListener
-        public final void onRefreshFromStart(int i) {
-            if (this.d) {
-                a();
-            } else {
-                a(QueryDirectionEnum.QUERY_OLD, i);
-            }
-        }
-
-        @Override // com.qiyukf.uikit.common.ui.listview.AutoRefreshListView.OnRefreshListener
-        public final void onRefreshFromEnd() {
-            if (this.d) {
-                return;
-            }
-            a(QueryDirectionEnum.QUERY_NEW, 0);
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:10:0x0047  */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public static /* synthetic */ boolean a(com.qiyukf.uikit.session.module.a.a.C0168a r7) {
-            /*
-                com.qiyukf.unicorn.b r0 = com.qiyukf.unicorn.c.i()
-                r1 = 0
-                if (r0 != 0) goto L9
-                r0 = 0
-                goto L15
-            L9:
-                com.qiyukf.uikit.session.module.a.a r2 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r2 = com.qiyukf.uikit.session.module.a.a.b(r2)
-                java.lang.String r2 = r2.c
-                int r0 = r0.a(r2)
-            L15:
-                com.qiyukf.unicorn.k.d r2 = com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r3 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r3 = com.qiyukf.uikit.session.module.a.a.b(r3)
-                java.lang.String r3 = r3.c
-                com.qiyukf.unicorn.f.p r2 = r2.c(r3)
-                com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r3 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r3 = com.qiyukf.uikit.session.module.a.a.b(r3)
-                java.lang.String r3 = r3.c
-                com.qiyukf.nimlib.sdk.msg.model.IMMessage r3 = com.qiyukf.unicorn.k.d.k(r3)
-                if (r3 == 0) goto L47
-                com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r3 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r3 = com.qiyukf.uikit.session.module.a.a.b(r3)
-                java.lang.String r3 = r3.c
-                boolean r3 = com.qiyukf.unicorn.k.d.l(r3)
-                if (r3 == 0) goto L9d
-            L47:
-                com.qiyukf.unicorn.api.YSFOptions r3 = com.qiyukf.unicorn.c.f()
-                boolean r3 = r3.isDefaultLoadMsg
-                if (r3 != 0) goto L9d
-                if (r0 > 0) goto L9d
-                com.qiyukf.uikit.session.module.a.a r3 = com.qiyukf.uikit.session.module.a.a.this
-                boolean r3 = r3.a
-                if (r3 != 0) goto L9d
-                if (r2 == 0) goto L5d
-                boolean r2 = r2.c
-                if (r2 != 0) goto L9d
-            L5d:
-                com.qiyukf.unicorn.k.d r2 = com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r3 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r3 = com.qiyukf.uikit.session.module.a.a.b(r3)
-                java.lang.String r3 = r3.c
-                long r2 = r2.d(r3)
-                r4 = 0
-                int r6 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
-                if (r6 == 0) goto L93
-                com.qiyukf.uikit.session.module.a.a r2 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r2 = com.qiyukf.uikit.session.module.a.a.b(r2)
-                java.lang.String r2 = r2.c
-                long r2 = com.qiyukf.unicorn.d.c.w(r2)
-                com.qiyukf.unicorn.k.d r4 = com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r5 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r5 = com.qiyukf.uikit.session.module.a.a.b(r5)
-                java.lang.String r5 = r5.c
-                long r4 = r4.d(r5)
-                int r6 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
-                if (r6 == 0) goto L9d
-            L93:
-                com.qiyukf.uikit.session.module.a.a r2 = com.qiyukf.uikit.session.module.a.a.this
-                boolean r2 = com.qiyukf.uikit.session.module.a.a.f(r2)
-                if (r2 != 0) goto L9c
-                goto L9d
-            L9c:
-                return r1
-            L9d:
-                if (r0 <= 0) goto Lba
-                com.qiyukf.uikit.session.module.a.a r0 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r0 = com.qiyukf.uikit.session.module.a.a.b(r0)
-                java.lang.String r0 = r0.c
-                com.qiyukf.unicorn.k.d r1 = com.qiyukf.unicorn.c.h()
-                com.qiyukf.uikit.session.module.a.a r7 = com.qiyukf.uikit.session.module.a.a.this
-                com.qiyukf.uikit.session.module.a r7 = com.qiyukf.uikit.session.module.a.a.b(r7)
-                java.lang.String r7 = r7.c
-                long r1 = r1.d(r7)
-                com.qiyukf.unicorn.d.c.d(r0, r1)
-            Lba:
-                r7 = 1
-                return r7
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.qiyukf.uikit.session.module.a.a.C0168a.a(com.qiyukf.uikit.session.module.a.a$a):boolean");
-        }
-
-        public static /* synthetic */ void a(C0168a c0168a, List list) {
-            int size = list.size();
-            if (c0168a.d) {
-                Collections.reverse(list);
-            }
-            if (c0168a.e && a.this.f.size() > 0) {
-                Iterator it = list.iterator();
-                while (it.hasNext()) {
-                    IMMessage iMMessage = (IMMessage) it.next();
-                    Iterator it2 = a.this.f.iterator();
-                    while (true) {
-                        if (it2.hasNext()) {
-                            IMMessage iMMessage2 = (IMMessage) it2.next();
-                            if (iMMessage2.isTheSame(iMMessage)) {
-                                a.this.f.remove(iMMessage2);
-                                break;
-                            }
-                        }
+                if (cVarA.m() == 2) {
+                    if (EvaluationApi.getInstance().getOnEvaluationEventListener() == null) {
+                        return;
                     }
+                    EvaluationApi.getInstance().getOnEvaluationEventListener().onEvaluationMessageClick(a(cVar, dVarA2.getSessionId()), this.a.getContext());
+                } else if (cVarA.m() == 0) {
+                    b(dVarA2);
                 }
             }
-            if (c0168a.e && c0168a.c != null) {
-                a.this.f.add(c0168a.c);
-            }
-            ArrayList arrayList = new ArrayList();
-            arrayList.addAll(list);
-            if (c0168a.b == QueryDirectionEnum.QUERY_NEW) {
-                a.this.f.addAll(arrayList);
-            } else {
-                a.this.f.addAll(0, arrayList);
-            }
-            if (c0168a.e) {
-                a.this.a(Unicorn.getUnreadCount() > 0, true);
-            }
-            a.this.g.a(a.this.f, true, c0168a.e);
-            a.this.k();
-            a.this.d();
-            a.this.e.onRefreshComplete(size, 20, true);
-            c0168a.e = false;
         }
     }
 
-    /* JADX INFO: compiled from: MessageListPanel.java */
-    public class b implements b.InterfaceC0169b {
-        private b() {
-        }
+    private static EvaluationOpenEntry a(com.qiyukf.unicorn.h.a.f.c cVar, String str) {
+        EvaluationOpenEntry evaluationOpenEntry = new EvaluationOpenEntry();
+        evaluationOpenEntry.setEvaluationEntryList(cVar.i().e());
+        evaluationOpenEntry.setExchange(str);
+        evaluationOpenEntry.setLastRemark(cVar.g());
+        evaluationOpenEntry.setLastSource(cVar.d());
+        evaluationOpenEntry.setSessionId(cVar.f());
+        evaluationOpenEntry.setTitle(cVar.i().c());
+        evaluationOpenEntry.setType(cVar.i().d());
+        evaluationOpenEntry.setResolvedEnabled(cVar.i().k());
+        evaluationOpenEntry.setResolvedRequired(cVar.i().l());
+        return evaluationOpenEntry;
+    }
 
-        public /* synthetic */ b(a aVar, byte b) {
-            this();
+    private void b(IMMessage iMMessage) {
+        if (iMMessage.getSessionId().equals(this.b)) {
+            if (this.h == null) {
+                a(this.a.getContext(), iMMessage);
+            }
+        } else {
+            if (this.c.containsKey(iMMessage.getSessionId())) {
+                return;
+            }
+            this.c.put(iMMessage.getSessionId(), iMMessage);
         }
+    }
 
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void a(IMMessage iMMessage) {
-            if (iMMessage.getDirect() == MsgDirectionEnum.Out) {
-                if (iMMessage.getStatus() == MsgStatusEnum.fail) {
-                    e(iMMessage);
-                    return;
+    public final Map<String, IMMessage> c() {
+        return this.c;
+    }
+
+    public final Map<String, Long> d() {
+        return this.d;
+    }
+
+    public final Map<String, Boolean> e() {
+        return this.e;
+    }
+
+    public final boolean c(String str) {
+        return a(str, true);
+    }
+
+    public final boolean a(String str, boolean z) {
+        boolean z2 = true;
+        if (this.e.get(str) != null && ((this.e.get(str) == null || !this.e.get(str).booleanValue()) && com.qiyukf.unicorn.c.h().g(str) != 1)) {
+            z2 = false;
+        }
+        if (!z2) {
+            AbsUnicornLog.i("EvaluationManager", "evaluation is not enable");
+            if (z) {
+                t.a(R.string.ysf_evaluation_limit);
+            }
+        }
+        return z2;
+    }
+
+    public final void a(Context context, IMMessage iMMessage) {
+        com.qiyukf.unicorn.ui.evaluate.c cVar = new com.qiyukf.unicorn.ui.evaluate.c(context, (com.qiyukf.unicorn.h.a.f.c) iMMessage.getAttachment());
+        cVar.setCanceledOnTouchOutside(false);
+        cVar.a(new c.b() { // from class: com.qiyukf.unicorn.k.a.1
+            final /* synthetic */ com.qiyukf.unicorn.ui.evaluate.c a;
+            final /* synthetic */ IMMessage b;
+            final /* synthetic */ Context c;
+
+            public AnonymousClass1(com.qiyukf.unicorn.ui.evaluate.c cVar2, IMMessage iMMessage2, Context context2) {
+                cVar = cVar2;
+                iMMessage = iMMessage2;
+                context = context2;
+            }
+
+            @Override // com.qiyukf.unicorn.ui.evaluate.c.b
+            public final void onSubmit(int i, List<String> list, String str, String str2, int i2, long j) {
+                cVar.a(false);
+                cVar.b(true);
+                a.this.a(iMMessage, i, str, list, str2, i2, new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.1.1
+                    public C01821() {
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                    public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                        if (i3 != 200 && i3 != 415) {
+                            if (cVar.isShowing()) {
+                                cVar.a(true);
+                                cVar.b(false);
+                                t.a(context.getString(R.string.ysf_network_error));
+                                return;
+                            }
+                            return;
+                        }
+                        if (i3 == 200) {
+                            cVar.cancel();
+                        } else if (cVar.isShowing()) {
+                            cVar.a(true);
+                            cVar.b(false);
+                        }
+                    }
+                });
+            }
+
+            /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$1$1 */
+            /* JADX INFO: compiled from: EvaluationManager.java */
+            public class C01821 extends RequestCallbackWrapper<String> {
+                public C01821() {
                 }
-                if (iMMessage.getAttachment() instanceof FileAttachment) {
-                    FileAttachment fileAttachment = (FileAttachment) iMMessage.getAttachment();
-                    if (TextUtils.isEmpty(fileAttachment.getPath()) && TextUtils.isEmpty(fileAttachment.getThumbPath())) {
-                        d(iMMessage);
+
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                    if (i3 != 200 && i3 != 415) {
+                        if (cVar.isShowing()) {
+                            cVar.a(true);
+                            cVar.b(false);
+                            t.a(context.getString(R.string.ysf_network_error));
+                            return;
+                        }
+                        return;
+                    }
+                    if (i3 == 200) {
+                        cVar.cancel();
+                    } else if (cVar.isShowing()) {
+                        cVar.a(true);
+                        cVar.b(false);
+                    }
+                }
+            }
+        });
+        cVar2.show();
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$1 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass1 implements c.b {
+        final /* synthetic */ com.qiyukf.unicorn.ui.evaluate.c a;
+        final /* synthetic */ IMMessage b;
+        final /* synthetic */ Context c;
+
+        public AnonymousClass1(com.qiyukf.unicorn.ui.evaluate.c cVar2, IMMessage iMMessage2, Context context2) {
+            cVar = cVar2;
+            iMMessage = iMMessage2;
+            context = context2;
+        }
+
+        @Override // com.qiyukf.unicorn.ui.evaluate.c.b
+        public final void onSubmit(int i, List<String> list, String str, String str2, int i2, long j) {
+            cVar.a(false);
+            cVar.b(true);
+            a.this.a(iMMessage, i, str, list, str2, i2, new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.1.1
+                public C01821() {
+                }
+
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                    if (i3 != 200 && i3 != 415) {
+                        if (cVar.isShowing()) {
+                            cVar.a(true);
+                            cVar.b(false);
+                            t.a(context.getString(R.string.ysf_network_error));
+                            return;
+                        }
+                        return;
+                    }
+                    if (i3 == 200) {
+                        cVar.cancel();
+                    } else if (cVar.isShowing()) {
+                        cVar.a(true);
+                        cVar.b(false);
+                    }
+                }
+            });
+        }
+
+        /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$1$1 */
+        /* JADX INFO: compiled from: EvaluationManager.java */
+        public class C01821 extends RequestCallbackWrapper<String> {
+            public C01821() {
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+            public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                if (i3 != 200 && i3 != 415) {
+                    if (cVar.isShowing()) {
+                        cVar.a(true);
+                        cVar.b(false);
+                        t.a(context.getString(R.string.ysf_network_error));
                         return;
                     }
                     return;
                 }
-                e(iMMessage);
-                return;
+                if (i3 == 200) {
+                    cVar.cancel();
+                } else if (cVar.isShowing()) {
+                    cVar.a(true);
+                    cVar.b(false);
+                }
             }
-            d(iMMessage);
         }
+    }
 
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final boolean a(View view, final IMMessage iMMessage) {
-            if (!a.this.c.e.isLongClickEnabled() || a.this.c.a == null || a.this.c.a.isFinishing() || a.this.c.a.isDestroyed()) {
-                return true;
+    public final void b(Context context, IMMessage iMMessage) {
+        a(context, iMMessage, (RequestCallbackWrapper) null);
+    }
+
+    public final void a(Context context, IMMessage iMMessage, RequestCallbackWrapper requestCallbackWrapper) {
+        com.qiyukf.unicorn.ui.evaluate.c cVar = new com.qiyukf.unicorn.ui.evaluate.c(context, (x) iMMessage.getAttachment());
+        cVar.setCanceledOnTouchOutside(false);
+        cVar.a(new c.a() { // from class: com.qiyukf.unicorn.k.a.4
+            final /* synthetic */ RequestCallbackWrapper a;
+
+            public AnonymousClass4(RequestCallbackWrapper requestCallbackWrapper2) {
+                requestCallbackWrapper = requestCallbackWrapper2;
             }
-            int[] iArr = new int[2];
-            view.getLocationOnScreen(iArr);
-            final ArrayList arrayList = new ArrayList();
-            final String string = a.this.c.a.getString(R.string.ysf_re_send_has_blank);
-            MsgStatusEnum status = iMMessage.getStatus();
-            MsgStatusEnum msgStatusEnum = MsgStatusEnum.fail;
-            if (status == msgStatusEnum) {
-                Map<String, Object> localExtension = iMMessage.getLocalExtension();
-                if (iMMessage.getMsgType() != MsgTypeEnum.text || localExtension == null || localExtension.get("text_msg_touch_is_ban_tag") == null || !(localExtension.get("text_msg_touch_is_ban_tag") instanceof Boolean) || !((Boolean) localExtension.get("text_msg_touch_is_ban_tag")).booleanValue()) {
-                    arrayList.add(string);
+
+            @Override // com.qiyukf.unicorn.ui.evaluate.c.a
+            public final void a() {
+                RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                if (requestCallbackWrapper2 != null) {
+                    requestCallbackWrapper2.onResult(400, "", null);
                 }
             }
-            final String string2 = a.this.c.a.getString(R.string.ysf_message_recall);
-            MsgStatusEnum status2 = iMMessage.getStatus();
-            MsgStatusEnum msgStatusEnum2 = MsgStatusEnum.recall;
-            if (status2 != msgStatusEnum2 && iMMessage.getDirect() == MsgDirectionEnum.Out && c.h().g(iMMessage.getSessionId()) == 0 && iMMessage.getStatus() != msgStatusEnum && System.currentTimeMillis() - iMMessage.getTime() <= 120000 && !(iMMessage.getAttachment() instanceof az)) {
-                arrayList.add(string2);
+        });
+        cVar.a(new c.b() { // from class: com.qiyukf.unicorn.k.a.5
+            final /* synthetic */ com.qiyukf.unicorn.ui.evaluate.c a;
+            final /* synthetic */ IMMessage b;
+            final /* synthetic */ Context c;
+            final /* synthetic */ RequestCallbackWrapper d;
+
+            public AnonymousClass5(com.qiyukf.unicorn.ui.evaluate.c cVar2, IMMessage iMMessage2, Context context2, RequestCallbackWrapper requestCallbackWrapper2) {
+                cVar = cVar2;
+                iMMessage = iMMessage2;
+                context = context2;
+                requestCallbackWrapper = requestCallbackWrapper2;
             }
-            final String string3 = a.this.c.a.getString(R.string.ysf_copy_has_blank);
-            MsgTypeEnum msgType = iMMessage.getMsgType();
-            MsgTypeEnum msgTypeEnum = MsgTypeEnum.text;
-            if (msgType == msgTypeEnum || (iMMessage.getAttachment() instanceof com.qiyukf.unicorn.h.a.a)) {
-                arrayList.add(string3);
-            }
-            final String string4 = a.this.c.a.getString(R.string.ysf_copy_select_text);
-            if (iMMessage.getMsgType() == msgTypeEnum) {
-                arrayList.add(string4);
-            }
-            final String string5 = a.this.c.a.getString(R.string.ysf_quote_reply);
-            if (iMMessage.getStatus() != msgStatusEnum2 && QuoteMsgHelper.canQuoteMessage(a.this.c.a, a.this.c.c, iMMessage, a.this.n)) {
-                arrayList.add(string5);
-            }
-            final String string6 = a.this.c.a.getString(com.qiyukf.unicorn.d.c.l() ? R.string.ysf_audio_play_by_speaker : R.string.ysf_audio_play_by_earphone);
-            final String string7 = a.this.c.a.getString(R.string.ysf_audio_translate);
-            if (iMMessage.getMsgType() == MsgTypeEnum.audio) {
-                arrayList.add(string6);
-                Locale localeB = aa.b(a.this.c.a);
-                if (Locale.CHINESE.getLanguage().equals(localeB.getLanguage()) && !Locale.TRADITIONAL_CHINESE.getCountry().equals(localeB.getCountry())) {
-                    arrayList.add(string7);
-                }
-            }
-            final String string8 = a.this.c.a.getString(R.string.ysf_delete_has_blank);
-            if (arrayList.isEmpty()) {
-                return true;
-            }
-            final ItemBlackPopupWindow itemBlackPopupWindow = new ItemBlackPopupWindow(a.this.c.a, arrayList, iArr[1], iMMessage.getDirect() == MsgDirectionEnum.In);
-            itemBlackPopupWindow.setOnItemClickListener(new ItemBlackPopupWindow.OnItemClickListener() { // from class: com.qiyukf.uikit.session.module.a.a.b.4
-                @Override // com.qiyukf.unicorn.widget.ItemBlackPopupWindow.OnItemClickListener
-                public final void onClick(int i) {
-                    if (TextUtils.equals((CharSequence) arrayList.get(i), string)) {
-                        final b bVar = b.this;
-                        final IMMessage iMMessage2 = iMMessage;
-                        if (a.this.b(iMMessage2.getUuid()) >= 0) {
-                            UnicornDialog.showDoubleBtnDialog(a.this.c.a, null, a.this.c.a.getString(R.string.ysf_re_send_message), true, new UnicornDialog.OnClickListener() { // from class: com.qiyukf.uikit.session.module.a.a.b.5
-                                @Override // com.qiyukf.unicorn.widget.dialog.UnicornDialog.OnClickListener
-                                public final void onClick(int i2) {
-                                    if (i2 == 0) {
-                                        b.this.e(iMMessage2);
-                                    }
-                                }
-                            });
-                        }
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string3)) {
-                        b bVar2 = b.this;
-                        IMMessage iMMessage3 = iMMessage;
-                        if (iMMessage3.getMsgType() == MsgTypeEnum.text) {
-                            com.qiyukf.unicorn.n.g.a.a(a.this.c.a, iMMessage3.getContent());
-                        } else if (iMMessage3.getAttachment() instanceof com.qiyukf.unicorn.h.a.a) {
-                            com.qiyukf.unicorn.n.g.a.a(a.this.c.a, ((com.qiyukf.unicorn.h.a.a) iMMessage3.getAttachment()).a(a.this.c.a));
-                        }
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string6)) {
-                        com.qiyukf.unicorn.d.c.a(!com.qiyukf.unicorn.d.c.l());
-                        a.this.b(com.qiyukf.unicorn.d.c.l() ? R.string.ysf_audio_current_mode_is_earphone : R.string.ysf_audio_current_mode_is_speaker);
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string7)) {
-                        b bVar3 = b.this;
-                        IMMessage iMMessage4 = iMMessage;
-                        MsgDirectionEnum direct = iMMessage4.getDirect();
-                        MsgDirectionEnum msgDirectionEnum = MsgDirectionEnum.In;
-                        if (direct == msgDirectionEnum && iMMessage4.getAttachStatus() != AttachStatusEnum.transferred) {
-                            t.a(R.string.ysf_no_permission_audio_error);
-                        } else {
-                            MsgStatusEnum status3 = iMMessage4.getStatus();
-                            MsgStatusEnum msgStatusEnum3 = MsgStatusEnum.read;
-                            if (status3 != msgStatusEnum3 && iMMessage4.getDirect() == msgDirectionEnum) {
-                                iMMessage4.setStatus(msgStatusEnum3);
-                                ((YsfService) NIMClient.getService(YsfService.class)).updateIMMessageStatus(iMMessage4, true);
-                            }
-                            g.a(a.this.c.a);
-                            if (a.this.c.b.getActivity() != null) {
-                                a.this.c.b.getActivity().getSupportFragmentManager().beginTransaction().add(android.R.id.content, TranslateFragment.newInstance(iMMessage4)).addToBackStack(null).commitAllowingStateLoss();
-                            }
-                        }
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string8)) {
-                        b bVar4 = b.this;
-                        IMMessage iMMessage5 = iMMessage;
-                        ((MsgService) NIMClient.getService(MsgService.class)).deleteChattingHistory(iMMessage5);
-                        a.this.g.a(iMMessage5);
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string2)) {
-                        a.c(a.this, iMMessage);
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string5)) {
-                        a.this.c.e.onMessageQuote(iMMessage);
-                    } else if (TextUtils.equals((CharSequence) arrayList.get(i), string4) && a.this.c.b.getActivity() != null) {
-                        FragmentTransaction fragmentTransactionBeginTransaction = a.this.c.b.getActivity().getSupportFragmentManager().beginTransaction();
-                        IMMessage iMMessage6 = iMMessage;
-                        fragmentTransactionBeginTransaction.add(android.R.id.content, TranslateFragment.newInstance(iMMessage6, "text", iMMessage6.getContent())).addToBackStack(null).commitAllowingStateLoss();
+
+            @Override // com.qiyukf.unicorn.ui.evaluate.c.b
+            public final void onSubmit(int i, List<String> list, String str, String str2, int i2, long j) {
+                cVar.a(false);
+                cVar.b(true);
+                a.this.b(iMMessage, i, str, list, str2, i2, new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.5.1
+                    public AnonymousClass1() {
                     }
-                    itemBlackPopupWindow.dismiss();
-                }
-            });
-            itemBlackPopupWindow.showAt(view);
-            return true;
-        }
 
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final boolean a() {
-            return a.this.c.e.isAllowSendMessage(true);
-        }
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                    public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                        String str4 = str3;
+                        if (i3 == 200 || i3 == 415) {
+                            cVar.cancel();
+                        } else if (cVar.isShowing()) {
+                            cVar.a(true);
+                            cVar.b(false);
+                            t.a(context.getString(R.string.ysf_network_error));
+                        }
+                        RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                        if (requestCallbackWrapper2 != null) {
+                            requestCallbackWrapper2.onResult(i3, str4, th);
+                        }
+                    }
+                });
+            }
 
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void b(IMMessage iMMessage) {
-            a.this.c.e.sendMessage(iMMessage, false);
-        }
-
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void c(IMMessage iMMessage) {
-            a.this.c.e.sendMessageToInputPanel(iMMessage);
-        }
-
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void b() {
-            a.this.c.e.shouldCollapseInputPanel();
-        }
-
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void a(SendImageHelper.Callback callback) {
-            a.this.s = callback;
-            PickImageAndVideoHelper.showSelector((TFragment) a.this.c.b, 8, false, d.a(w.a() + ".jpg", com.qiyukf.unicorn.n.e.c.TYPE_TEMP), false);
-        }
-
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void c() {
-            a.this.h();
-        }
-
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void a(x xVar, String str, final RequestCallback<String> requestCallback) {
-            a aVar = a.this;
-            aVar.t = new WorkSheetHelper(aVar.c.b);
-            a.this.t.openWorkSheetDialog(xVar, str, 18, 17, new RequestCallback<String>() { // from class: com.qiyukf.uikit.session.module.a.a.b.1
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final void onException(Throwable th) {
+            /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$5$1 */
+            /* JADX INFO: compiled from: EvaluationManager.java */
+            public class AnonymousClass1 extends RequestCallbackWrapper<String> {
+                public AnonymousClass1() {
                 }
 
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final void onFailed(int i) {
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                    String str4 = str3;
+                    if (i3 == 200 || i3 == 415) {
+                        cVar.cancel();
+                    } else if (cVar.isShowing()) {
+                        cVar.a(true);
+                        cVar.b(false);
+                        t.a(context.getString(R.string.ysf_network_error));
+                    }
+                    RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                    if (requestCallbackWrapper2 != null) {
+                        requestCallbackWrapper2.onResult(i3, str4, th);
+                    }
                 }
+            }
+        });
+        cVar2.show();
+    }
 
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final /* synthetic */ void onSuccess(String str2) {
-                    requestCallback.onSuccess(str2);
-                    a.this.t = null;
-                }
-            });
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$4 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass4 implements c.a {
+        final /* synthetic */ RequestCallbackWrapper a;
+
+        public AnonymousClass4(RequestCallbackWrapper requestCallbackWrapper2) {
+            requestCallbackWrapper = requestCallbackWrapper2;
         }
 
-        @Override // com.qiyukf.uikit.session.module.a.b.InterfaceC0169b
-        public final void a(long j, final RequestCallback<String> requestCallback) {
-            a aVar = a.this;
-            aVar.t = new WorkSheetHelper(aVar.c.b);
-            a.this.t.openWorkSheetDialog(j, a.this.c.c, 18, 17, new RequestCallback<String>() { // from class: com.qiyukf.uikit.session.module.a.a.b.2
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final void onException(Throwable th) {
-                }
+        @Override // com.qiyukf.unicorn.ui.evaluate.c.a
+        public final void a() {
+            RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+            if (requestCallbackWrapper2 != null) {
+                requestCallbackWrapper2.onResult(400, "", null);
+            }
+        }
+    }
 
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final void onFailed(int i) {
-                }
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$5 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass5 implements c.b {
+        final /* synthetic */ com.qiyukf.unicorn.ui.evaluate.c a;
+        final /* synthetic */ IMMessage b;
+        final /* synthetic */ Context c;
+        final /* synthetic */ RequestCallbackWrapper d;
 
-                @Override // com.qiyukf.nimlib.sdk.RequestCallback
-                public final /* synthetic */ void onSuccess(String str) {
-                    requestCallback.onSuccess(str);
-                    a.this.t = null;
-                }
-            });
+        public AnonymousClass5(com.qiyukf.unicorn.ui.evaluate.c cVar2, IMMessage iMMessage2, Context context2, RequestCallbackWrapper requestCallbackWrapper2) {
+            cVar = cVar2;
+            iMMessage = iMMessage2;
+            context = context2;
+            requestCallbackWrapper = requestCallbackWrapper2;
         }
 
-        private void d(final IMMessage iMMessage) {
-            UnicornDialog.showDoubleBtnDialog(a.this.c.a, null, a.this.c.a.getString(R.string.ysf_re_download_message), true, new UnicornDialog.OnClickListener() { // from class: com.qiyukf.uikit.session.module.a.a.b.3
-                @Override // com.qiyukf.unicorn.widget.dialog.UnicornDialog.OnClickListener
-                public final void onClick(int i) {
-                    if (i == 0 && iMMessage.getAttachment() != null && (iMMessage.getAttachment() instanceof FileAttachment)) {
-                        ((MsgService) NIMClient.getService(MsgService.class)).downloadAttachment(iMMessage, true);
+        @Override // com.qiyukf.unicorn.ui.evaluate.c.b
+        public final void onSubmit(int i, List<String> list, String str, String str2, int i2, long j) {
+            cVar.a(false);
+            cVar.b(true);
+            a.this.b(iMMessage, i, str, list, str2, i2, new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.5.1
+                public AnonymousClass1() {
+                }
+
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                    String str4 = str3;
+                    if (i3 == 200 || i3 == 415) {
+                        cVar.cancel();
+                    } else if (cVar.isShowing()) {
+                        cVar.a(true);
+                        cVar.b(false);
+                        t.a(context.getString(R.string.ysf_network_error));
+                    }
+                    RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                    if (requestCallbackWrapper2 != null) {
+                        requestCallbackWrapper2.onResult(i3, str4, th);
                     }
                 }
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* JADX WARN: Type inference fix 'apply assigned field type' failed
-        java.lang.UnsupportedOperationException: ArgType.getObject(), call class: class jadx.core.dex.instructions.args.ArgType$UnknownArg
-        	at jadx.core.dex.instructions.args.ArgType.getObject(ArgType.java:593)
-        	at jadx.core.dex.attributes.nodes.ClassTypeVarsAttr.getTypeVarsMapFor(ClassTypeVarsAttr.java:35)
-        	at jadx.core.dex.nodes.utils.TypeUtils.replaceClassGenerics(TypeUtils.java:177)
-        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.insertExplicitUseCast(FixTypesVisitor.java:397)
-        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryFieldTypeWithNewCasts(FixTypesVisitor.java:359)
-        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.applyFieldType(FixTypesVisitor.java:309)
-        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.visit(FixTypesVisitor.java:94)
-         */
-        public void e(IMMessage iMMessage) {
-            com.qiyukf.nimlib.session.d dVar = (com.qiyukf.nimlib.session.d) iMMessage;
-            dVar.b(System.currentTimeMillis());
-            dVar.b(a.this.c.c);
-            dVar.setStatus(MsgStatusEnum.sending);
-            dVar.a(a.this.c.d);
-            if (dVar.getMsgType() == MsgTypeEnum.audio) {
-                AudioAttachment audioAttachment = (AudioAttachment) dVar.getAttachment();
-                audioAttachment.setAutoTransform(a.this.p);
-                dVar.setAttachment(audioAttachment);
+        /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$5$1 */
+        /* JADX INFO: compiled from: EvaluationManager.java */
+        public class AnonymousClass1 extends RequestCallbackWrapper<String> {
+            public AnonymousClass1() {
             }
-            a.this.g.a(iMMessage);
-            a.this.c.e.sendMessage(dVar, true);
-            a.this.a(iMMessage);
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+            public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                String str4 = str3;
+                if (i3 == 200 || i3 == 415) {
+                    cVar.cancel();
+                } else if (cVar.isShowing()) {
+                    cVar.a(true);
+                    cVar.b(false);
+                    t.a(context.getString(R.string.ysf_network_error));
+                }
+                RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                if (requestCallbackWrapper2 != null) {
+                    requestCallbackWrapper2.onResult(i3, str4, th);
+                }
+            }
         }
     }
 
-    public final void b(IMMessage iMMessage) {
-        this.g.a(iMMessage);
-    }
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$6 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass6 extends RequestCallbackWrapper<String> {
+        final /* synthetic */ com.qiyukf.unicorn.h.a.f.c a;
+        final /* synthetic */ RequestCallbackWrapper b;
 
-    private void l() {
-        if (this.y == null) {
-            this.y = new b.a() { // from class: com.qiyukf.uikit.session.module.a.a.3
-            };
+        public AnonymousClass6(com.qiyukf.unicorn.h.a.f.c cVar, RequestCallbackWrapper requestCallbackWrapper) {
+            cVar = cVar;
+            requestCallbackWrapper = requestCallbackWrapper;
         }
-        com.qiyukf.uikit.b.a.a(this.y);
-    }
 
-    private void m() {
-        b.a aVar = this.y;
-        if (aVar != null) {
-            com.qiyukf.uikit.b.a.b(aVar);
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+        public final /* synthetic */ void onResult(int i, String str, Throwable th) {
+            String str2 = str;
+            if (i == 200 || i == 201) {
+                if (cVar.i().b() != null) {
+                    j.a(cVar.i().b(), "richTextThanks", str2);
+                }
+                cVar.i().a(str2);
+                if (i == 201) {
+                    cVar.a(0);
+                } else {
+                    cVar.a(1);
+                }
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(a.this.b, SessionTypeEnum.Ysf, cVar), true);
+                if (cVar.f() == com.qiyukf.unicorn.d.c.j(a.this.b)) {
+                    com.qiyukf.unicorn.d.c.b(a.this.b, 2);
+                    com.qiyukf.unicorn.d.c.a(a.this.b, -1);
+                }
+                i = 200;
+            }
+            d.a aVarK = com.qiyukf.unicorn.c.h().k();
+            if (aVarK != null) {
+                aVarK.onEvaluationEvent(a.this.b);
+            }
+            RequestCallbackWrapper requestCallbackWrapper = requestCallbackWrapper;
+            if (requestCallbackWrapper != null) {
+                requestCallbackWrapper.onResult(i, str2, th);
+            }
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+            super.onFailed(i);
         }
     }
 
-    public final void b(int i) {
-        int i2 = com.qiyukf.unicorn.d.c.l() ? R.drawable.ysf_play_audio_mode_earphone1 : R.drawable.ysf_play_audio_mode_speaker1;
-        this.k.setText(i);
-        this.m.setBackgroundResource(i2);
-        this.j.setVisibility(0);
-        this.i.removeCallbacks(this.z);
-        this.i.postDelayed(this.z, 3000L);
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$7 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass7 implements RequestCallback<Void> {
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onException(Throwable th) {
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final /* bridge */ /* synthetic */ void onSuccess(Void r1) {
+        }
+
+        public AnonymousClass7() {
+        }
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$8 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass8 extends RequestCallbackWrapper<String> {
+        final /* synthetic */ IMMessage a;
+        final /* synthetic */ String b;
+        final /* synthetic */ com.qiyukf.unicorn.h.a.f.c c;
+        final /* synthetic */ com.qiyukf.unicorn.h.a.f.c d;
+        final /* synthetic */ String e;
+        final /* synthetic */ IMMessage f;
+        final /* synthetic */ RequestCallbackWrapper g;
+
+        public AnonymousClass8(IMMessage iMMessage, String str, com.qiyukf.unicorn.h.a.f.c cVar, com.qiyukf.unicorn.h.a.f.c cVar2, String str2, IMMessage iMMessage2, RequestCallbackWrapper requestCallbackWrapper) {
+            iMMessage = iMMessage;
+            str = str;
+            cVar = cVar;
+            cVar = cVar2;
+            str = str2;
+            iMMessage = iMMessage2;
+            requestCallbackWrapper = requestCallbackWrapper;
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+        public final /* synthetic */ void onResult(int i, String str, Throwable th) {
+            d.a aVarK;
+            String str2 = str;
+            if (i == 200 || i == 201) {
+                String sessionId = iMMessage.getSessionId();
+                SessionTypeEnum sessionTypeEnum = SessionTypeEnum.Ysf;
+                IMMessage iMMessageCreateTextMessage = MessageBuilder.createTextMessage(sessionId, sessionTypeEnum, str);
+                iMMessageCreateTextMessage.setStatus(MsgStatusEnum.success);
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(iMMessageCreateTextMessage, true);
+                cVar.l();
+                ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                if (cVar.i().b() != null) {
+                    j.a(cVar.i().b(), "richTextThanks", str2);
+                }
+                cVar.i().a(str2);
+                if (i == 201) {
+                    cVar.a(0);
+                } else {
+                    cVar.a(1);
+                }
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(str, sessionTypeEnum, cVar), true);
+                if (cVar.f() == com.qiyukf.unicorn.d.c.j(str)) {
+                    com.qiyukf.unicorn.d.c.b(str, 2);
+                    com.qiyukf.unicorn.d.c.a(str, -1);
+                }
+                i = 200;
+            }
+            if ((com.qiyukf.unicorn.d.c.j(str) == ((com.qiyukf.unicorn.h.a.f.c) iMMessage.getAttachment()).f() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                aVarK.onEvaluationEvent(str);
+            }
+            RequestCallbackWrapper requestCallbackWrapper = requestCallbackWrapper;
+            if (requestCallbackWrapper != null) {
+                requestCallbackWrapper.onResult(i, str2, th);
+            }
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+            super.onFailed(i);
+        }
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$9 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass9 implements RequestCallback<Void> {
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onException(Throwable th) {
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final /* bridge */ /* synthetic */ void onSuccess(Void r1) {
+        }
+
+        public AnonymousClass9() {
+        }
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$10 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass10 extends RequestCallbackWrapper<String> {
+        final /* synthetic */ g a;
+        final /* synthetic */ IMMessage b;
+        final /* synthetic */ com.qiyukf.unicorn.h.a.f.c c;
+        final /* synthetic */ String d;
+        final /* synthetic */ IMMessage e;
+        final /* synthetic */ RequestCallbackWrapper f;
+
+        public AnonymousClass10(g gVar, IMMessage iMMessage, com.qiyukf.unicorn.h.a.f.c cVar, String str, IMMessage iMMessage2, RequestCallbackWrapper requestCallbackWrapper) {
+            gVar = gVar;
+            iMMessage = iMMessage;
+            cVar = cVar;
+            str = str;
+            iMMessage = iMMessage2;
+            requestCallbackWrapper = requestCallbackWrapper;
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+        public final /* synthetic */ void onResult(int i, String str, Throwable th) {
+            d.a aVarK;
+            String str2 = str;
+            if (i == 200 || i == 201) {
+                gVar.g();
+                ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                if (cVar.i().b() != null) {
+                    j.a(cVar.i().b(), "richTextThanks", str2);
+                }
+                cVar.i().a(str2);
+                if (i == 201) {
+                    cVar.a(0);
+                } else {
+                    cVar.a(1);
+                }
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, cVar), true);
+                if (cVar.f() == com.qiyukf.unicorn.d.c.j(str)) {
+                    com.qiyukf.unicorn.d.c.b(str, 2);
+                    com.qiyukf.unicorn.d.c.a(str, -1);
+                }
+                i = 200;
+            }
+            if ((com.qiyukf.unicorn.d.c.j(str) == ((g) iMMessage.getAttachment()).b() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                aVarK.onEvaluationEvent(str);
+            }
+            RequestCallbackWrapper requestCallbackWrapper = requestCallbackWrapper;
+            if (requestCallbackWrapper != null) {
+                requestCallbackWrapper.onResult(i, str2, th);
+            }
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+            super.onFailed(i);
+            requestCallbackWrapper.onFailed(i);
+        }
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$11 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass11 extends RequestCallbackWrapper<String> {
+        final /* synthetic */ x a;
+        final /* synthetic */ String b;
+        final /* synthetic */ RequestCallbackWrapper c;
+
+        public AnonymousClass11(x xVar, String str, RequestCallbackWrapper requestCallbackWrapper) {
+            xVar = xVar;
+            str = str;
+            requestCallbackWrapper = requestCallbackWrapper;
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+        public final /* synthetic */ void onResult(int i, String str, Throwable th) {
+            String str2 = str;
+            if (i == 200) {
+                if (xVar.k().b() != null) {
+                    j.a(xVar.k().b(), "messageThanks", str2);
+                }
+                xVar.k().a(str2);
+                com.qiyukf.nimlib.session.d dVarA = com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, xVar);
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(dVarA, true);
+                com.qiyukf.unicorn.d.c.c(str, dVarA.getUuid());
+                if (xVar.d() == com.qiyukf.unicorn.d.c.j(str)) {
+                    com.qiyukf.unicorn.d.c.c(str, 2);
+                }
+            }
+            d.a aVarK = com.qiyukf.unicorn.c.h().k();
+            if (aVarK != null) {
+                aVarK.onRobotEvaluationEvent(str);
+            }
+            RequestCallbackWrapper requestCallbackWrapper = requestCallbackWrapper;
+            if (requestCallbackWrapper != null) {
+                requestCallbackWrapper.onResult(i, str2, th);
+            }
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i) {
+            super.onFailed(i);
+        }
+    }
+
+    public final void b(IMMessage iMMessage, int i, String str, List<String> list, String str2, int i2, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        x xVar = (x) iMMessage.getAttachment();
+        x xVar2 = new x();
+        xVar2.a(i);
+        xVar2.a(xVar.k());
+        xVar2.b(str);
+        xVar2.a("android");
+        p pVarC = com.qiyukf.unicorn.c.h().c(this.b);
+        if (pVarC != null && pVarC.f) {
+            xVar2.a(pVarC.g);
+        } else {
+            xVar2.a(xVar.d());
+        }
+        xVar2.a(list);
+        xVar2.b(i2);
+        String sessionId = iMMessage.getSessionId();
+        IMMessage iMMessageQueryLastMessage = ((MsgService) NIMClient.getService(MsgService.class)).queryLastMessage(sessionId, SessionTypeEnum.Ysf);
+        c.a(xVar2, sessionId).setCallback(new RequestCallback<Void>() { // from class: com.qiyukf.unicorn.k.a.2
+            final /* synthetic */ IMMessage a;
+            final /* synthetic */ String b;
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onException(Throwable th) {
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onFailed(int i3) {
+            }
+
+            public AnonymousClass2(IMMessage iMMessage2, String str22) {
+                iMMessage = iMMessage2;
+                str = str22;
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final /* synthetic */ void onSuccess(Void r3) {
+                IMMessage iMMessageCreateTextMessage = MessageBuilder.createTextMessage(iMMessage.getSessionId(), SessionTypeEnum.Ysf, str);
+                iMMessageCreateTextMessage.setStatus(MsgStatusEnum.success);
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(iMMessageCreateTextMessage, true);
+            }
+        });
+        b(xVar2.d(), new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.3
+            final /* synthetic */ x a;
+            final /* synthetic */ x b;
+            final /* synthetic */ IMMessage c;
+            final /* synthetic */ String d;
+            final /* synthetic */ IMMessage e;
+            final /* synthetic */ RequestCallbackWrapper f;
+
+            public AnonymousClass3(x xVar3, x xVar22, IMMessage iMMessage2, String sessionId2, IMMessage iMMessageQueryLastMessage2, RequestCallbackWrapper requestCallbackWrapper2) {
+                xVar = xVar3;
+                xVar = xVar22;
+                iMMessage = iMMessage2;
+                str = sessionId2;
+                iMMessage = iMMessageQueryLastMessage2;
+                requestCallbackWrapper = requestCallbackWrapper2;
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+            public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                d.a aVarK;
+                String str4 = str3;
+                if (i3 == 200) {
+                    if (xVar.k().b() != null) {
+                        j.a(xVar.k().b(), "messageThanks", str4);
+                    }
+                    xVar.i();
+                    xVar.k().a(str4);
+                    xVar.k().a(str4);
+                    ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                    com.qiyukf.nimlib.session.d dVarA = com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, xVar);
+                    ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(dVarA, true);
+                    com.qiyukf.unicorn.d.c.c(str, dVarA.getUuid());
+                    if (xVar.d() == com.qiyukf.unicorn.d.c.j(str)) {
+                        com.qiyukf.unicorn.d.c.c(str, 2);
+                    }
+                }
+                if ((com.qiyukf.unicorn.d.c.k(str) == ((x) iMMessage.getAttachment()).d() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                    aVarK.onRobotEvaluationEvent(str);
+                }
+                RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                if (requestCallbackWrapper2 != null) {
+                    requestCallbackWrapper2.onResult(i3, str4, th);
+                }
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onFailed(int i3) {
+                super.onFailed(i3);
+            }
+        });
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$2 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass2 implements RequestCallback<Void> {
+        final /* synthetic */ IMMessage a;
+        final /* synthetic */ String b;
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onException(Throwable th) {
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i3) {
+        }
+
+        public AnonymousClass2(IMMessage iMMessage2, String str22) {
+            iMMessage = iMMessage2;
+            str = str22;
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallback
+        public final /* synthetic */ void onSuccess(Void r3) {
+            IMMessage iMMessageCreateTextMessage = MessageBuilder.createTextMessage(iMMessage.getSessionId(), SessionTypeEnum.Ysf, str);
+            iMMessageCreateTextMessage.setStatus(MsgStatusEnum.success);
+            ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(iMMessageCreateTextMessage, true);
+        }
+    }
+
+    /* JADX INFO: renamed from: com.qiyukf.unicorn.k.a$3 */
+    /* JADX INFO: compiled from: EvaluationManager.java */
+    public class AnonymousClass3 extends RequestCallbackWrapper<String> {
+        final /* synthetic */ x a;
+        final /* synthetic */ x b;
+        final /* synthetic */ IMMessage c;
+        final /* synthetic */ String d;
+        final /* synthetic */ IMMessage e;
+        final /* synthetic */ RequestCallbackWrapper f;
+
+        public AnonymousClass3(x xVar3, x xVar22, IMMessage iMMessage2, String sessionId2, IMMessage iMMessageQueryLastMessage2, RequestCallbackWrapper requestCallbackWrapper2) {
+            xVar = xVar3;
+            xVar = xVar22;
+            iMMessage = iMMessage2;
+            str = sessionId2;
+            iMMessage = iMMessageQueryLastMessage2;
+            requestCallbackWrapper = requestCallbackWrapper2;
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+        public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+            d.a aVarK;
+            String str4 = str3;
+            if (i3 == 200) {
+                if (xVar.k().b() != null) {
+                    j.a(xVar.k().b(), "messageThanks", str4);
+                }
+                xVar.i();
+                xVar.k().a(str4);
+                xVar.k().a(str4);
+                ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                com.qiyukf.nimlib.session.d dVarA = com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, xVar);
+                ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(dVarA, true);
+                com.qiyukf.unicorn.d.c.c(str, dVarA.getUuid());
+                if (xVar.d() == com.qiyukf.unicorn.d.c.j(str)) {
+                    com.qiyukf.unicorn.d.c.c(str, 2);
+                }
+            }
+            if ((com.qiyukf.unicorn.d.c.k(str) == ((x) iMMessage.getAttachment()).d() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                aVarK.onRobotEvaluationEvent(str);
+            }
+            RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+            if (requestCallbackWrapper2 != null) {
+                requestCallbackWrapper2.onResult(i3, str4, th);
+            }
+        }
+
+        @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+        public final void onFailed(int i3) {
+            super.onFailed(i3);
+        }
+    }
+
+    private void a(long j, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        this.f.put(j, requestCallbackWrapper);
+    }
+
+    public final RequestCallbackWrapper<String> a(long j) {
+        RequestCallbackWrapper<String> requestCallbackWrapper = this.f.get(j);
+        this.f.remove(j);
+        return requestCallbackWrapper;
+    }
+
+    private void b(long j, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        this.g.put(j, requestCallbackWrapper);
+    }
+
+    public final RequestCallbackWrapper<String> b(long j) {
+        RequestCallbackWrapper<String> requestCallbackWrapper = this.g.get(j);
+        this.g.remove(j);
+        return requestCallbackWrapper;
+    }
+
+    public final boolean f() {
+        return this.i;
     }
 
     public final void a(boolean z) {
-        this.p = z;
+        this.i = z;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public MediaPlayer a(File file) {
-        try {
-            return MediaPlayer.create(this.c.a, Uri.fromFile(file));
-        } catch (Exception e) {
-            AbsUnicornLog.e("MessageListPanel", "getVideoMediaPlayer is error file", e);
-            return null;
+    public static com.qiyukf.unicorn.h.a.c.c a(String str) {
+        com.qiyukf.unicorn.h.a.c.c cVarQ = com.qiyukf.unicorn.d.c.q(str);
+        return cVarQ == null ? com.qiyukf.unicorn.h.a.c.c.a() : cVarQ;
+    }
+
+    public static com.qiyukf.unicorn.h.a.c.e b(String str) {
+        com.qiyukf.unicorn.h.a.c.e eVarR = com.qiyukf.unicorn.d.c.r(str);
+        return eVarR == null ? com.qiyukf.unicorn.h.a.c.e.a() : eVarR;
+    }
+
+    public final void a(h hVar, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        if (com.qiyukf.unicorn.c.h().d().a(this.b, true)) {
+            if (TextUtils.isEmpty(this.b)) {
+                this.b = hVar.a;
+            }
+            com.qiyukf.unicorn.h.a.f.c cVar = new com.qiyukf.unicorn.h.a.f.c();
+            cVar.b(hVar.b);
+            cVar.a(a(this.b));
+            cVar.b(hVar.c);
+            cVar.a("android");
+            if (hVar.g == 0) {
+                hVar.g = com.qiyukf.unicorn.d.c.j(hVar.a);
+            }
+            cVar.a(hVar.g);
+            cVar.a(hVar.d);
+            cVar.d(hVar.f);
+            cVar.e(hVar.h);
+            c.a(cVar, this.b);
+            a(cVar.f(), new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.6
+                final /* synthetic */ com.qiyukf.unicorn.h.a.f.c a;
+                final /* synthetic */ RequestCallbackWrapper b;
+
+                public AnonymousClass6(com.qiyukf.unicorn.h.a.f.c cVar2, RequestCallbackWrapper requestCallbackWrapper2) {
+                    cVar = cVar2;
+                    requestCallbackWrapper = requestCallbackWrapper2;
+                }
+
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                public final /* synthetic */ void onResult(int i, String str, Throwable th) {
+                    String str2 = str;
+                    if (i == 200 || i == 201) {
+                        if (cVar.i().b() != null) {
+                            j.a(cVar.i().b(), "richTextThanks", str2);
+                        }
+                        cVar.i().a(str2);
+                        if (i == 201) {
+                            cVar.a(0);
+                        } else {
+                            cVar.a(1);
+                        }
+                        ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(a.this.b, SessionTypeEnum.Ysf, cVar), true);
+                        if (cVar.f() == com.qiyukf.unicorn.d.c.j(a.this.b)) {
+                            com.qiyukf.unicorn.d.c.b(a.this.b, 2);
+                            com.qiyukf.unicorn.d.c.a(a.this.b, -1);
+                        }
+                        i = 200;
+                    }
+                    d.a aVarK = com.qiyukf.unicorn.c.h().k();
+                    if (aVarK != null) {
+                        aVarK.onEvaluationEvent(a.this.b);
+                    }
+                    RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                    if (requestCallbackWrapper2 != null) {
+                        requestCallbackWrapper2.onResult(i, str2, th);
+                    }
+                }
+
+                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+                public final void onFailed(int i) {
+                    super.onFailed(i);
+                }
+            });
         }
     }
 
-    public final com.qiyukf.uikit.session.module.a.b j() {
-        return this.g;
-    }
+    public final void a(IMMessage iMMessage, int i, String str, List<String> list, String str2, int i2, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        if (com.qiyukf.unicorn.c.h().d().a(iMMessage.getSessionId(), true)) {
+            if (iMMessage.getAttachment() instanceof com.qiyukf.unicorn.h.a.f.c) {
+                com.qiyukf.unicorn.h.a.f.c cVar = (com.qiyukf.unicorn.h.a.f.c) iMMessage.getAttachment();
+                com.qiyukf.unicorn.h.a.f.c cVar2 = new com.qiyukf.unicorn.h.a.f.c();
+                cVar2.b(i);
+                cVar2.a(cVar.i());
+                cVar2.b(str);
+                cVar2.a("android");
+                cVar2.a(cVar.f());
+                cVar2.a(list);
+                cVar2.d(i2);
+                if (cVar.n() != null) {
+                    cVar2.a(cVar.n());
+                }
+                String sessionId = iMMessage.getSessionId();
+                IMMessage iMMessageQueryLastMessage = ((MsgService) NIMClient.getService(MsgService.class)).queryLastMessage(sessionId, SessionTypeEnum.Ysf);
+                c.a(cVar2, sessionId).setCallback(new RequestCallback<Void>() { // from class: com.qiyukf.unicorn.k.a.7
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onException(Throwable th) {
+                    }
 
-    public final IMMessage a(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return null;
-        }
-        for (IMMessage iMMessage : this.g.getItems()) {
-            if (iMMessage.getUuid().equals(str)) {
-                return iMMessage;
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onFailed(int i3) {
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final /* bridge */ /* synthetic */ void onSuccess(Void r1) {
+                    }
+
+                    public AnonymousClass7() {
+                    }
+                });
+                a(cVar2.f(), new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.8
+                    final /* synthetic */ IMMessage a;
+                    final /* synthetic */ String b;
+                    final /* synthetic */ com.qiyukf.unicorn.h.a.f.c c;
+                    final /* synthetic */ com.qiyukf.unicorn.h.a.f.c d;
+                    final /* synthetic */ String e;
+                    final /* synthetic */ IMMessage f;
+                    final /* synthetic */ RequestCallbackWrapper g;
+
+                    public AnonymousClass8(IMMessage iMMessage2, String str22, com.qiyukf.unicorn.h.a.f.c cVar3, com.qiyukf.unicorn.h.a.f.c cVar22, String sessionId2, IMMessage iMMessageQueryLastMessage2, RequestCallbackWrapper requestCallbackWrapper2) {
+                        iMMessage = iMMessage2;
+                        str = str22;
+                        cVar = cVar3;
+                        cVar = cVar22;
+                        str = sessionId2;
+                        iMMessage = iMMessageQueryLastMessage2;
+                        requestCallbackWrapper = requestCallbackWrapper2;
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                    public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                        d.a aVarK;
+                        String str22 = str3;
+                        if (i3 == 200 || i3 == 201) {
+                            String sessionId2 = iMMessage.getSessionId();
+                            SessionTypeEnum sessionTypeEnum = SessionTypeEnum.Ysf;
+                            IMMessage iMMessageCreateTextMessage = MessageBuilder.createTextMessage(sessionId2, sessionTypeEnum, str);
+                            iMMessageCreateTextMessage.setStatus(MsgStatusEnum.success);
+                            ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(iMMessageCreateTextMessage, true);
+                            cVar.l();
+                            ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                            if (cVar.i().b() != null) {
+                                j.a(cVar.i().b(), "richTextThanks", str22);
+                            }
+                            cVar.i().a(str22);
+                            if (i3 == 201) {
+                                cVar.a(0);
+                            } else {
+                                cVar.a(1);
+                            }
+                            ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(str, sessionTypeEnum, cVar), true);
+                            if (cVar.f() == com.qiyukf.unicorn.d.c.j(str)) {
+                                com.qiyukf.unicorn.d.c.b(str, 2);
+                                com.qiyukf.unicorn.d.c.a(str, -1);
+                            }
+                            i3 = 200;
+                        }
+                        if ((com.qiyukf.unicorn.d.c.j(str) == ((com.qiyukf.unicorn.h.a.f.c) iMMessage.getAttachment()).f() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                            aVarK.onEvaluationEvent(str);
+                        }
+                        RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                        if (requestCallbackWrapper2 != null) {
+                            requestCallbackWrapper2.onResult(i3, str22, th);
+                        }
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onFailed(int i3) {
+                        super.onFailed(i3);
+                    }
+                });
+                return;
+            }
+            if (iMMessage2.getAttachment() instanceof g) {
+                g gVar = (g) iMMessage2.getAttachment();
+                com.qiyukf.unicorn.h.a.f.c cVar3 = new com.qiyukf.unicorn.h.a.f.c();
+                cVar3.b(i);
+                cVar3.a(gVar.e());
+                cVar3.b(str);
+                cVar3.a("android");
+                cVar3.a(gVar.b());
+                cVar3.a(list);
+                cVar3.d(i2);
+                if (gVar.l() != 0) {
+                    cVar3.a(Long.valueOf(gVar.l()));
+                }
+                String sessionId2 = iMMessage2.getSessionId();
+                IMMessage iMMessageQueryLastMessage2 = ((MsgService) NIMClient.getService(MsgService.class)).queryLastMessage(sessionId2, SessionTypeEnum.Ysf);
+                c.a(cVar3, sessionId2).setCallback(new RequestCallback<Void>() { // from class: com.qiyukf.unicorn.k.a.9
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onException(Throwable th) {
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onFailed(int i3) {
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallback
+                    public final /* bridge */ /* synthetic */ void onSuccess(Void r1) {
+                    }
+
+                    public AnonymousClass9() {
+                    }
+                });
+                a(cVar3.f(), new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.10
+                    final /* synthetic */ g a;
+                    final /* synthetic */ IMMessage b;
+                    final /* synthetic */ com.qiyukf.unicorn.h.a.f.c c;
+                    final /* synthetic */ String d;
+                    final /* synthetic */ IMMessage e;
+                    final /* synthetic */ RequestCallbackWrapper f;
+
+                    public AnonymousClass10(g gVar2, IMMessage iMMessage2, com.qiyukf.unicorn.h.a.f.c cVar32, String sessionId22, IMMessage iMMessageQueryLastMessage22, RequestCallbackWrapper requestCallbackWrapper2) {
+                        gVar = gVar2;
+                        iMMessage = iMMessage2;
+                        cVar = cVar32;
+                        str = sessionId22;
+                        iMMessage = iMMessageQueryLastMessage22;
+                        requestCallbackWrapper = requestCallbackWrapper2;
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+                    public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                        d.a aVarK;
+                        String str22 = str3;
+                        if (i3 == 200 || i3 == 201) {
+                            gVar.g();
+                            ((YsfService) NIMClient.getService(YsfService.class)).updateMessage(iMMessage, true);
+                            if (cVar.i().b() != null) {
+                                j.a(cVar.i().b(), "richTextThanks", str22);
+                            }
+                            cVar.i().a(str22);
+                            if (i3 == 201) {
+                                cVar.a(0);
+                            } else {
+                                cVar.a(1);
+                            }
+                            ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, cVar), true);
+                            if (cVar.f() == com.qiyukf.unicorn.d.c.j(str)) {
+                                com.qiyukf.unicorn.d.c.b(str, 2);
+                                com.qiyukf.unicorn.d.c.a(str, -1);
+                            }
+                            i3 = 200;
+                        }
+                        if ((com.qiyukf.unicorn.d.c.j(str) == ((g) iMMessage.getAttachment()).b() || iMMessage.isTheSame(iMMessage)) && (aVarK = com.qiyukf.unicorn.c.h().k()) != null) {
+                            aVarK.onEvaluationEvent(str);
+                        }
+                        RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                        if (requestCallbackWrapper2 != null) {
+                            requestCallbackWrapper2.onResult(i3, str22, th);
+                        }
+                    }
+
+                    @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+                    public final void onFailed(int i3) {
+                        super.onFailed(i3);
+                        requestCallbackWrapper.onFailed(i3);
+                    }
+                });
             }
         }
-        return null;
     }
 
-    public static /* synthetic */ void b(a aVar, IMMessage iMMessage) {
-        if (c.h().b(iMMessage)) {
-            iMMessage.setStatus(MsgStatusEnum.unread);
-            MsgDBHelper.updateMessageStatus((com.qiyukf.nimlib.session.d) iMMessage);
+    public final void a(String str, int i, String str2, List<String> list, int i2, RequestCallbackWrapper<String> requestCallbackWrapper) {
+        long jK = com.qiyukf.unicorn.d.c.k(str);
+        x xVar = new x();
+        xVar.a(i);
+        xVar.a(b(str));
+        xVar.b(str2);
+        xVar.a("android");
+        p pVarC = com.qiyukf.unicorn.c.h().c(str);
+        if (pVarC != null && pVarC.f) {
+            xVar.a(pVarC.g);
+        } else {
+            xVar.a(jK);
         }
-        int iB = aVar.b(iMMessage.getUuid());
-        if (iB < 0 || iB >= aVar.f.size()) {
-            return;
-        }
-        IMMessage iMMessage2 = aVar.f.get(iB);
-        iMMessage2.setStatus(iMMessage.getStatus());
-        iMMessage2.setAttachStatus(iMMessage.getAttachStatus());
-        iMMessage2.setAttachment(iMMessage.getAttachment());
-        iMMessage2.setLocalExtension(iMMessage.getLocalExtension());
-        iMMessage2.setRemoteExtension(iMMessage.getRemoteExtension());
-        iMMessage2.setContent(iMMessage.getContent());
-        aVar.c(iB);
-        aVar.g.notifyDataSetChanged();
-        if (ListViewUtil.isAtBottom(aVar.e) || aVar.r != 0 || iMMessage.getDirect() == MsgDirectionEnum.Out) {
-            aVar.r = 0;
-            aVar.a(false, false);
-        }
-    }
+        xVar.a(list);
+        xVar.b(i2);
+        c.a(xVar, str);
+        b(xVar.d(), new RequestCallbackWrapper<String>() { // from class: com.qiyukf.unicorn.k.a.11
+            final /* synthetic */ x a;
+            final /* synthetic */ String b;
+            final /* synthetic */ RequestCallbackWrapper c;
 
-    public static /* synthetic */ void a(a aVar, AttachmentProgress attachmentProgress) {
-        int iB = aVar.b(attachmentProgress.getUuid());
-        if (iB < 0 || iB >= aVar.f.size()) {
-            return;
-        }
-        aVar.g.a(aVar.f.get(iB), attachmentProgress.getTransferred() / attachmentProgress.getTotal());
-        aVar.c(iB);
-    }
+            public AnonymousClass11(x xVar2, String str3, RequestCallbackWrapper requestCallbackWrapper2) {
+                xVar = xVar2;
+                str = str3;
+                requestCallbackWrapper = requestCallbackWrapper2;
+            }
 
-    public static /* synthetic */ void c(a aVar, IMMessage iMMessage) {
-        if (aVar.c.e.isAllowSendMessage(true)) {
-            q qVar = new q();
-            qVar.a(String.valueOf(c.h().d(iMMessage.getSessionId())));
-            qVar.b(iMMessage.getUuid());
-            com.qiyukf.unicorn.k.c.a(qVar, iMMessage.getSessionId());
-            AbsUnicornLog.i("MessageListPanel", "withdrawMessage sessionId=" + qVar.a() + ", msgId=" + qVar.b());
-        }
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
+            public final /* synthetic */ void onResult(int i3, String str3, Throwable th) {
+                String str22 = str3;
+                if (i3 == 200) {
+                    if (xVar.k().b() != null) {
+                        j.a(xVar.k().b(), "messageThanks", str22);
+                    }
+                    xVar.k().a(str22);
+                    com.qiyukf.nimlib.session.d dVarA = com.qiyukf.nimlib.ysf.a.a(str, SessionTypeEnum.Ysf, xVar);
+                    ((YsfService) NIMClient.getService(YsfService.class)).saveMessageToLocal(dVarA, true);
+                    com.qiyukf.unicorn.d.c.c(str, dVarA.getUuid());
+                    if (xVar.d() == com.qiyukf.unicorn.d.c.j(str)) {
+                        com.qiyukf.unicorn.d.c.c(str, 2);
+                    }
+                }
+                d.a aVarK = com.qiyukf.unicorn.c.h().k();
+                if (aVarK != null) {
+                    aVarK.onRobotEvaluationEvent(str);
+                }
+                RequestCallbackWrapper requestCallbackWrapper2 = requestCallbackWrapper;
+                if (requestCallbackWrapper2 != null) {
+                    requestCallbackWrapper2.onResult(i3, str22, th);
+                }
+            }
+
+            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper, com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onFailed(int i3) {
+                super.onFailed(i3);
+            }
+        });
     }
 }
