@@ -1,189 +1,158 @@
-package com.qiyukf.nimlib.biz.c.k;
+package com.qiyukf.unicorn.ui.viewholder.a;
 
-import android.text.TextUtils;
-import com.qiyukf.nimlib.biz.c.i;
-import com.qiyukf.nimlib.biz.d.j.m;
-import com.qiyukf.nimlib.biz.e.l.f;
-import com.qiyukf.nimlib.biz.e.l.j;
-import com.qiyukf.nimlib.biz.e.l.o;
-import com.qiyukf.nimlib.biz.e.l.p;
-import com.qiyukf.nimlib.biz.k;
-import com.qiyukf.nimlib.sdk.msg.model.HandleQuickCommentOption;
-import com.qiyukf.nimlib.sdk.msg.model.IMMessage;
-import com.qiyukf.nimlib.sdk.msg.model.MessageKey;
-import com.qiyukf.nimlib.sdk.msg.model.QuickCommentOption;
-import com.qiyukf.nimlib.sdk.msg.model.QuickCommentOptionWrapper;
-import com.qiyukf.nimlib.session.MsgDBHelper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import com.qiyukf.module.log.base.AbsUnicornLog;
+import com.qiyukf.nimlib.sdk.RequestCallback;
+import com.qiyukf.nimlib.sdk.msg.MessageBuilder;
+import com.qiyukf.uikit.session.module.a.b;
+import com.qiyukf.uikit.session.viewholder.MsgViewHolderBase;
+import com.qiyukf.unicorn.R;
+import com.qiyukf.unicorn.api.OnBotEventListener;
+import com.qiyukf.unicorn.api.helper.UnicornWorkSheetHelper;
+import com.qiyukf.unicorn.h.a.d.ag;
+import com.qiyukf.unicorn.widget.BotVerticalActionItemView;
+import com.qiyukf.unicorn.widget.tabLayout.PagerTabLayout;
+import com.qiyukf.unicorn.widget.tabLayout.RobotQuickPagerTabLayout;
+import com.qiyukf.unicorn.widget.tabLayout.ViewPagerTab;
 import java.util.List;
 
-/* JADX INFO: compiled from: QuickCommentResponseHandler.java */
+/* JADX INFO: compiled from: MsgViewHolderRobotQuickEnter.java */
 /* JADX INFO: loaded from: classes6.dex */
-public final class c extends i {
-    @Override // com.qiyukf.nimlib.biz.c.a
-    public final void a(com.qiyukf.nimlib.biz.e.a aVar) {
-        List<IMMessage> arrayList;
-        if (!aVar.e()) {
-            i.a(aVar, null);
+public class c extends i {
+    private LinearLayout a;
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public boolean isShowQuickEntry() {
+        return true;
+    }
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public boolean showAvatar() {
+        return false;
+    }
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public int getContentResId() {
+        return R.layout.ysf_message_action_custom_layout;
+    }
+
+    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
+    public void inflateContentView() {
+        this.contentContainer.setVisibility(8);
+        this.a = (LinearLayout) findViewById(R.id.ysf_ll_message_item_quick_container_tab);
+    }
+
+    @Override // com.qiyukf.unicorn.ui.viewholder.a.i
+    public final void a() {
+        final ag agVar = (ag) this.message.getAttachment();
+        LinearLayout quickEntryContainer = getQuickEntryContainer();
+        quickEntryContainer.setLayoutParams(new FrameLayout.LayoutParams(-2, -2));
+        quickEntryContainer.removeAllViews();
+        this.a.setVisibility(8);
+        quickEntryContainer.setVisibility(8);
+        if (agVar.a().size() > 0) {
+            quickEntryContainer.setVisibility(0);
+            a(quickEntryContainer, agVar.a(), false);
             return;
         }
-        if (aVar instanceof f) {
-            f fVar = (f) aVar;
-            com.qiyukf.nimlib.biz.d.j.c cVar = (com.qiyukf.nimlib.biz.d.j.c) k.a().a(fVar);
-            if (cVar == null) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "retrieveRequest failed");
-                i.a(fVar, null);
-                return;
-            }
-            long j = fVar.j();
-            com.qiyukf.nimlib.session.d dVarA = a(cVar.i());
-            if (dVarA == null) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "add: msg not in db");
-                i.a(fVar, null);
-                return;
-            } else if (!dVarA.o()) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "add: sync quick comment to enable the table");
-                i.a(fVar, null);
-                return;
-            } else {
-                a(dVarA, j);
-                a(dVarA.getUuid(), new QuickCommentOption(com.qiyukf.nimlib.c.q(), cVar.j(), j, cVar.k()));
-                i.a(fVar, null);
-                return;
-            }
+        if (agVar.b().size() == 1) {
+            quickEntryContainer.setVisibility(0);
+            a(quickEntryContainer, agVar.b().get(0).b(), false);
+            return;
         }
-        if (aVar instanceof p) {
-            p pVar = (p) aVar;
-            m mVar = (m) k.a().a(pVar);
-            if (mVar == null || mVar.i() == null) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "retrieveRequest failed");
-                i.a(pVar, null);
-                return;
+        if (agVar.b().size() > 1) {
+            this.a.setVisibility(0);
+            this.a.removeAllViews();
+            LinearLayout linearLayout = (LinearLayout) View.inflate(this.context, R.layout.ysf_message_robot_quick_group, this.a);
+            linearLayout.findViewById(R.id.ysf_robot_quick_group_ll);
+            final LinearLayout linearLayout2 = (LinearLayout) linearLayout.findViewById(R.id.ysf_robot_quick_group_list);
+            RobotQuickPagerTabLayout robotQuickPagerTabLayout = (RobotQuickPagerTabLayout) linearLayout.findViewById(R.id.ysf_robot_quick_group_tab_layout);
+            final List<ag.b> listB = agVar.b();
+            ViewPagerTab[] viewPagerTabArr = new ViewPagerTab[listB.size()];
+            for (int i = 0; i < listB.size(); i++) {
+                viewPagerTabArr[i] = new ViewPagerTab(listB.get(i).a(), 1);
             }
-            long j2 = pVar.j();
-            com.qiyukf.nimlib.session.d dVarA2 = a(mVar.i());
-            if (dVarA2 == null) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "remove: msg not in db");
-                i.a(pVar, null);
-                return;
-            } else if (!dVarA2.o()) {
-                com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "remove: sync quick comment to enable the table");
-                i.a(pVar, null);
-                return;
-            } else {
-                a(dVarA2, j2);
-                MsgDBHelper.deleteQuickComment(dVarA2.getUuid(), com.qiyukf.nimlib.c.q(), mVar.j());
-                i.a(pVar, null);
-                return;
-            }
-        }
-        if (aVar instanceof com.qiyukf.nimlib.biz.e.l.e) {
-            com.qiyukf.nimlib.biz.e.l.e eVar = (com.qiyukf.nimlib.biz.e.l.e) aVar;
-            HandleQuickCommentOption handleQuickCommentOption = new HandleQuickCommentOption(eVar.j(), eVar.k());
-            MessageKey key = handleQuickCommentOption.getKey();
-            QuickCommentOption commentOption = handleQuickCommentOption.getCommentOption();
-            if (key != null && commentOption != null) {
-                String uuid = key.getUuid();
-                com.qiyukf.nimlib.session.d dVar = (com.qiyukf.nimlib.session.d) MsgDBHelper.queryMessageByUuid(uuid);
-                if (dVar != null && dVar.o()) {
-                    com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "notify add: msg not exist or has not sync yet");
-                    a(uuid, commentOption);
-                    a(dVar, commentOption.getTime());
+            robotQuickPagerTabLayout.setOnTabClickListener(new PagerTabLayout.OnTabClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.c.1
+                @Override // com.qiyukf.unicorn.widget.tabLayout.PagerTabLayout.OnTabClickListener
+                public final void onCurrentTabClicked(int i2) {
+                    linearLayout2.removeAllViews();
+                    agVar.a(i2);
+                    c.this.a(linearLayout2, ((ag.b) listB.get(agVar.c())).b(), true);
                 }
-            }
-            com.qiyukf.nimlib.i.b.a(handleQuickCommentOption);
-            return;
+            });
+            robotQuickPagerTabLayout.setTabs(viewPagerTabArr, agVar.c());
+            linearLayout2.removeAllViews();
+            a(linearLayout2, listB.get(agVar.c()).b(), true);
         }
-        if (aVar instanceof o) {
-            o oVar = (o) aVar;
-            HandleQuickCommentOption handleQuickCommentOption2 = new HandleQuickCommentOption(oVar.j(), oVar.k());
-            MessageKey key2 = handleQuickCommentOption2.getKey();
-            QuickCommentOption commentOption2 = handleQuickCommentOption2.getCommentOption();
-            if (key2 != null && commentOption2 != null) {
-                String uuid2 = key2.getUuid();
-                com.qiyukf.nimlib.session.d dVar2 = (com.qiyukf.nimlib.session.d) MsgDBHelper.queryMessageByUuid(uuid2);
-                if (dVar2 != null && dVar2.o()) {
-                    com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "notify remove: msg not exist or has not sync yet");
-                    MsgDBHelper.deleteQuickComment(uuid2, commentOption2.getFromAccount(), commentOption2.getReplyType());
-                    a(dVar2, commentOption2.getTime());
-                }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void a(LinearLayout linearLayout, List<ag.a> list, boolean z) {
+        for (int i = 0; i < list.size(); i++) {
+            final ag.a aVar = list.get(i);
+            BotVerticalActionItemView botVerticalActionItemView = new BotVerticalActionItemView(this.context, z);
+            if (aVar.d() == 0) {
+                botVerticalActionItemView.setImage(aVar.e());
+            } else if (aVar.d() == 1) {
+                com.qiyukf.uikit.a.a(aVar.e(), botVerticalActionItemView.getImageView());
             }
-            com.qiyukf.nimlib.i.b.b(handleQuickCommentOption2);
-            return;
-        }
-        if (aVar instanceof j) {
-            j jVar = (j) aVar;
-            com.qiyukf.nimlib.biz.d.j.i iVar = (com.qiyukf.nimlib.biz.d.j.i) k.a().a(jVar);
-            if (iVar == null || (arrayList = iVar.i()) == null) {
-                arrayList = new ArrayList<>(0);
-            }
-            int size = arrayList.size();
-            HashMap<String, QuickCommentOptionWrapper> mapA = a(jVar);
-            ArrayList arrayList2 = new ArrayList(size);
-            Iterator<IMMessage> it = arrayList.iterator();
-            while (it.hasNext()) {
-                com.qiyukf.nimlib.session.d dVarA3 = a(it.next());
-                if (dVarA3 != null) {
-                    String uuid3 = dVarA3.getUuid();
-                    QuickCommentOptionWrapper quickCommentOptionWrapper = mapA.get(uuid3);
-                    if (quickCommentOptionWrapper == null || !quickCommentOptionWrapper.isModify()) {
-                        quickCommentOptionWrapper = new QuickCommentOptionWrapper(dVarA3.getMessageKey(), MsgDBHelper.queryQuickCommentByUuid(uuid3), false, quickCommentOptionWrapper == null ? dVarA3.getQuickCommentUpdateTime() : quickCommentOptionWrapper.getTime());
-                    } else {
-                        MsgDBHelper.deleteQuickComment(uuid3);
-                        MsgDBHelper.saveQuickComment(uuid3, quickCommentOptionWrapper.getQuickCommentList());
+            botVerticalActionItemView.getTextView().setText(aVar.b());
+            botVerticalActionItemView.setOnClickListener(new View.OnClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.c.2
+                @Override // android.view.View.OnClickListener
+                public final void onClick(View view) {
+                    long j;
+                    int iA = aVar.a();
+                    if (iA != 1) {
+                        if (iA == 2) {
+                            OnBotEventListener onBotEventListener = com.qiyukf.unicorn.c.f().onBotEventListener;
+                            if (onBotEventListener != null) {
+                                onBotEventListener.onUrlClick(((com.qiyukf.uikit.common.a.f) c.this).context, aVar.c());
+                            }
+                        } else if (iA == 3) {
+                            UnicornWorkSheetHelper.openUserWorkSheetActivity(((com.qiyukf.uikit.common.a.f) c.this).context, aVar.f(), aVar.g(), ((MsgViewHolderBase) c.this).message.getSessionId());
+                        } else if (iA == 4) {
+                            try {
+                                j = Long.parseLong(aVar.c());
+                            } catch (Exception e) {
+                                AbsUnicornLog.e("MsgViewHolderRobotQuick", "parse content is error url= " + aVar.c(), e);
+                                j = 0L;
+                            }
+                            if (j == 0) {
+                                return;
+                            } else {
+                                c.this.a(j);
+                            }
+                        }
+                    } else if (com.qiyukf.unicorn.k.c.a(true)) {
+                        com.qiyukf.unicorn.k.c.c(MessageBuilder.createTextMessage(((MsgViewHolderBase) c.this).message.getSessionId(), ((MsgViewHolderBase) c.this).message.getSessionType(), aVar.c()));
                     }
-                    a(dVarA3, quickCommentOptionWrapper.getTime());
-                    arrayList2.add(quickCommentOptionWrapper);
+                    String sessionId = ((MsgViewHolderBase) c.this).message.getSessionId();
+                    ((MsgViewHolderBase) c.this).message.getSessionId();
+                    com.qiyukf.unicorn.c.a.a(sessionId, 2, aVar.h(), 0L, aVar.b());
                 }
+            });
+            linearLayout.addView(botVerticalActionItemView);
+        }
+    }
+
+    public final void a(long j) {
+        getAdapter().b().b();
+        b.InterfaceC0169b interfaceC0169bB = getAdapter().b();
+        this.message.getSessionId();
+        interfaceC0169bB.a(j, new RequestCallback<String>() { // from class: com.qiyukf.unicorn.ui.viewholder.a.c.3
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onException(Throwable th) {
             }
-            i.a(jVar, arrayList2);
-        }
-    }
 
-    private static HashMap<String, QuickCommentOptionWrapper> a(j jVar) {
-        List<com.qiyukf.nimlib.push.packet.b.c> listJ = jVar.j();
-        if (listJ == null) {
-            listJ = new ArrayList<>(0);
-        }
-        HashMap<String, QuickCommentOptionWrapper> map = new HashMap<>(listJ.size() << 1);
-        Iterator<com.qiyukf.nimlib.push.packet.b.c> it = listJ.iterator();
-        while (it.hasNext()) {
-            QuickCommentOptionWrapper quickCommentOptionWrapperFromProperty = QuickCommentOptionWrapper.fromProperty(it.next());
-            MessageKey key = quickCommentOptionWrapperFromProperty.getKey();
-            if (key != null) {
-                String uuid = key.getUuid();
-                if (!TextUtils.isEmpty(uuid)) {
-                    map.put(uuid, quickCommentOptionWrapperFromProperty);
-                }
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final void onFailed(int i) {
             }
-        }
-        return map;
-    }
 
-    private static void a(com.qiyukf.nimlib.session.d dVar, long j) {
-        com.qiyukf.nimlib.log.c.b.a.d("QuickCommentResponseHandler", "do update time tag, time=".concat(String.valueOf(j)));
-        dVar.d(j);
-        MsgDBHelper.updateMessage(dVar);
-    }
-
-    private static void a(String str, QuickCommentOption quickCommentOption) {
-        ArrayList arrayList = new ArrayList(1);
-        arrayList.add(quickCommentOption);
-        MsgDBHelper.saveQuickComment(str, arrayList);
-    }
-
-    private static com.qiyukf.nimlib.session.d a(IMMessage iMMessage) {
-        if (iMMessage != null) {
-            String uuid = iMMessage.getUuid();
-            if (!TextUtils.isEmpty(uuid)) {
-                IMMessage iMMessageQueryMessageByUuid = MsgDBHelper.queryMessageByUuid(uuid);
-                if (iMMessageQueryMessageByUuid instanceof com.qiyukf.nimlib.session.d) {
-                    return (com.qiyukf.nimlib.session.d) iMMessageQueryMessageByUuid;
-                }
+            @Override // com.qiyukf.nimlib.sdk.RequestCallback
+            public final /* bridge */ /* synthetic */ void onSuccess(String str) {
             }
-        }
-        return null;
+        });
     }
 }
