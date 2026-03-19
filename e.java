@@ -1,373 +1,197 @@
-package com.qiyukf.unicorn.ui.viewholder.a;
+package com.qiyukf.nimlib.push.a.a;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.qiyukf.nimlib.sdk.NIMClient;
-import com.qiyukf.nimlib.sdk.RequestCallbackWrapper;
-import com.qiyukf.nimlib.sdk.ysf.YsfService;
-import com.qiyukf.uikit.session.helper.ClickMovementMethod;
-import com.qiyukf.uikit.session.viewholder.MsgViewHolderBase;
-import com.qiyukf.unicorn.R;
-import com.qiyukf.unicorn.api.UICustomization;
-import com.qiyukf.unicorn.h.a.d.ah;
-import com.qiyukf.unicorn.widget.DotProgressBar;
-import com.qiyukf.unicorn.widget.flowlayout.FlowLayout;
-import com.qiyukf.unicorn.widget.flowlayout.TagAdapter;
-import com.qiyukf.unicorn.widget.flowlayout.TagFlowLayout;
+import android.util.Pair;
+import com.qiyukf.nimlib.biz.k;
+import com.qiyukf.nimlib.h;
+import com.qiyukf.nimlib.plugin.interact.IMixPushInteract;
+import com.qiyukf.nimlib.push.a.c.g;
+import com.qiyukf.nimlib.push.f;
+import com.qiyukf.nimlib.report.n;
+import com.qiyukf.nimlib.report.u;
+import com.qiyukf.nimlib.sdk.auth.constant.LoginSyncStatus;
+import com.qiyukf.nimlib.sdk.superteam.SuperTeam;
+import com.qiyukf.nimlib.sdk.team.model.Team;
+import com.qiyukf.nimlib.superteam.SuperTeamDBHelper;
+import com.qiyukf.nimlib.team.TeamDBHelper;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-/* JADX INFO: compiled from: MsgViewHolderRobotStreamAnswer.java */
+/* JADX INFO: compiled from: SyncResponseHandler.java */
 /* JADX INFO: loaded from: classes6.dex */
-public class e extends MsgViewHolderBase {
-    private View a;
-    private View b;
-    private View c;
-    private EditText d;
-    private TextView e;
-    private TextView f;
-    private TagFlowLayout g;
-    private LinearLayout h;
-    private TextView i;
-    private TextView j;
-    private View k;
-    private View l;
-    private View m;
-    private DotProgressBar n;
-    private LinearLayout o;
-    private TextView p;
-    private final List<String> q;
-    private final TagFlowLayout.OnTagClickListener r;
-    private final TagAdapter<String> s;
+public final class e extends com.qiyukf.nimlib.biz.c.a {
+    private final boolean a;
 
-    public e() {
-        ArrayList arrayList = new ArrayList();
-        this.q = arrayList;
-        this.r = new TagFlowLayout.OnTagClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.6
-            @Override // com.qiyukf.unicorn.widget.flowlayout.TagFlowLayout.OnTagClickListener
-            public final boolean onTagClick(View view, int i, FlowLayout flowLayout) {
-                TextView textView = (TextView) view.findViewById(R.id.ysf_robot_tag_text);
-                ah.a aVarD = ((ah) ((MsgViewHolderBase) e.this).message.getAttachment()).d();
-                if (!textView.isSelected()) {
-                    i = -1;
-                }
-                aVarD.a(i);
-                e.this.a(textView.isSelected() || !e.this.d.getText().toString().isEmpty());
-                return true;
-            }
-        };
-        this.s = new TagAdapter<String>(arrayList) { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.7
-            @Override // com.qiyukf.unicorn.widget.flowlayout.TagAdapter
-            public final /* synthetic */ View getView(FlowLayout flowLayout, int i, String str) {
-                String str2 = str;
-                View viewInflate = LayoutInflater.from(flowLayout.getContext()).inflate(R.layout.ysf_robot_evaluation_tag_item, (ViewGroup) flowLayout, false);
-                TextView textView = (TextView) viewInflate.findViewById(R.id.ysf_robot_tag_text);
-                textView.setText(str2);
-                if (com.qiyukf.unicorn.m.a.a().c()) {
-                    textView.setTextColor(com.qiyukf.unicorn.m.b.b(com.qiyukf.unicorn.m.a.a().b().k(), Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f())));
-                    textView.setBackground(com.qiyukf.unicorn.m.b.a(com.qiyukf.unicorn.m.a.a().b().k(), 13));
-                }
-                if (Math.max((int) com.qiyukf.unicorn.n.y.a(str2, com.qiyukf.unicorn.n.p.a(12.0f)), (int) com.qiyukf.unicorn.n.y.a(flowLayout.getContext(), str2, 12.0f)) > (flowLayout.getMeasuredWidth() - com.qiyukf.unicorn.n.p.a(24.0f)) / 2) {
-                    ViewGroup.LayoutParams layoutParams = viewInflate.getLayoutParams();
-                    layoutParams.width = flowLayout.getMeasuredWidth();
-                    viewInflate.setLayoutParams(layoutParams);
-                } else {
-                    ViewGroup.LayoutParams layoutParams2 = viewInflate.getLayoutParams();
-                    layoutParams2.width = flowLayout.getMeasuredWidth() / 2;
-                    viewInflate.setLayoutParams(layoutParams2);
-                }
-                ViewGroup.LayoutParams layoutParams3 = textView.getLayoutParams();
-                layoutParams3.width = -1;
-                textView.setLayoutParams(layoutParams3);
-                return viewInflate;
-            }
-
-            @Override // com.qiyukf.unicorn.widget.flowlayout.TagAdapter
-            public final boolean unSelected(int i, int i2, View view) {
-                if (!(view instanceof ViewGroup)) {
-                    return true;
-                }
-                ViewGroup viewGroup = (ViewGroup) view;
-                int childCount = viewGroup.getChildCount();
-                for (int i3 = 0; i3 < childCount; i3++) {
-                    viewGroup.getChildAt(i3).setSelected(false);
-                }
-                return true;
-            }
-
-            @Override // com.qiyukf.unicorn.widget.flowlayout.TagAdapter
-            public final void onSelected(int i, View view) {
-                if (view instanceof ViewGroup) {
-                    ViewGroup viewGroup = (ViewGroup) view;
-                    int childCount = viewGroup.getChildCount();
-                    for (int i2 = 0; i2 < childCount; i2++) {
-                        viewGroup.getChildAt(i2).setSelected(true);
-                    }
-                }
-            }
-
-            @Override // com.qiyukf.unicorn.widget.flowlayout.TagAdapter
-            public final /* synthetic */ boolean setSelected(int i, String str) {
-                return i == ((ah) ((MsgViewHolderBase) e.this).message.getAttachment()).d().a();
-            }
-        };
+    public e(boolean z) {
+        this.a = z;
     }
 
-    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
-    public int getContentResId() {
-        return R.layout.ysf_message_item_robot_stream_answer;
-    }
-
-    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
-    public void inflateContentView() {
-        int color;
-        this.j = (TextView) findViewById(R.id.ysf_robot_stream_answer_text);
-        this.a = findViewById(R.id.ysf_robot_stream_layout);
-        this.b = findViewById(R.id.ysf_robot_stream_useful);
-        this.e = (TextView) findViewById(R.id.ysf_robot_stream_useful_text);
-        this.f = (TextView) findViewById(R.id.ysf_robot_stream_useless_text);
-        this.c = findViewById(R.id.ysf_robot_stream_useless);
-        this.d = (EditText) findViewById(R.id.ysf_robot_stream_content);
-        this.g = (TagFlowLayout) findViewById(R.id.ysf_robot_stream_tag_layout);
-        this.h = (LinearLayout) findViewById(R.id.ysf_robot_stream_tag_ll);
-        this.i = (TextView) findViewById(R.id.ysf_robot_stream_submit);
-        this.k = findViewById(R.id.ysf_message_include_divider);
-        this.l = findViewById(R.id.ysf_robot_useful_divider);
-        this.m = findViewById(R.id.ysf_robot_stream_vertical_divider);
-        this.n = (DotProgressBar) findViewById(R.id.ysf_robot_stream_progress);
-        this.o = (LinearLayout) findViewById(R.id.ysf_robot_stream_progress_layout);
-        this.p = (TextView) findViewById(R.id.ysf_robot_stream_progress_loading_text);
-        this.g.setOnTagClickListener(this.r);
-        this.g.setMaxSelectCount(1);
-        this.g.setAdapter(this.s);
-        TextView textView = this.j;
-        Context context = textView.getContext();
-        UICustomization uICustomization = com.qiyukf.unicorn.c.f().uiCustomization;
-        if (uICustomization == null || (color = uICustomization.hyperLinkColorLeft) == 0) {
-            color = context.getResources().getColor(R.color.ysf_text_link_color_blue);
-        }
-        textView.setLinkTextColor(color);
-        this.j.setOnTouchListener(ClickMovementMethod.newInstance());
-        if (com.qiyukf.unicorn.m.a.a().c()) {
-            this.k.setBackgroundColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().a()));
-            this.l.setBackgroundColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().a()));
-            this.m.setBackgroundColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().a()));
-            this.d.setBackground(com.qiyukf.unicorn.m.b.a(com.qiyukf.unicorn.m.a.a().b().s().a(), "#00000000", 3));
-            this.d.setHintTextColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().c()));
-            this.d.setTextColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f()));
-            this.j.setTextColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f()));
-            this.p.setTextColor(Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f()));
-        }
-    }
-
-    @Override // com.qiyukf.uikit.session.viewholder.MsgViewHolderBase
-    public void bindContentView() {
-        final ah ahVar = (ah) this.message.getAttachment();
-        String str = ahVar.d().c().get(0).c;
-        if (TextUtils.isEmpty(str) || TextUtils.isEmpty(str.trim())) {
-            this.o.setVisibility(0);
-            this.n.setVisibility(0);
-            if (TextUtils.isEmpty(ahVar.f())) {
-                this.p.setVisibility(8);
+    @Override // com.qiyukf.nimlib.biz.c.a
+    public final void a(com.qiyukf.nimlib.biz.e.a aVar) {
+        boolean zE = aVar.e();
+        short sH = aVar.h();
+        try {
+            if (h.h()) {
+                u.a().a(zE, sH);
             } else {
-                this.p.setVisibility(0);
-                this.p.setText(ahVar.f());
+                n.a().a(zE, sH);
             }
-            this.j.setVisibility(8);
-        } else {
-            this.n.setVisibility(8);
-            this.o.setVisibility(8);
-            this.j.setVisibility(0);
-            TextView textView = this.j;
-            UICustomization uICustomization = com.qiyukf.unicorn.c.f().uiCustomization;
-            if (uICustomization != null) {
-                float f = uICustomization.textMsgSize;
-                if (f > 0.0f) {
-                    textView.setTextSize(f);
-                }
-            }
-            com.qiyukf.unicorn.n.f.a(textView, str, (int) textView.getResources().getDimension(R.dimen.ysf_bubble_content_rich_image_max_width), this.message.getSessionId());
-            if (ahVar.d().d() > 0 && a(ahVar)) {
-                this.a.setVisibility(0);
-                this.b.setSelected(ahVar.d().d() == 2);
-                this.c.setSelected(ahVar.d().d() == 3);
-                if (com.qiyukf.unicorn.m.a.a().c()) {
-                    this.e.setTextColor(com.qiyukf.unicorn.m.b.b(com.qiyukf.unicorn.m.a.a().b().k(), Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f())));
-                    this.e.setCompoundDrawables(com.qiyukf.unicorn.m.b.a(this.context, com.qiyukf.unicorn.m.a.a().b().k(), true), null, null, null);
-                    this.f.setTextColor(com.qiyukf.unicorn.m.b.b(com.qiyukf.unicorn.m.a.a().b().k(), Color.parseColor(com.qiyukf.unicorn.m.a.a().b().s().f())));
-                    this.f.setCompoundDrawables(com.qiyukf.unicorn.m.b.a(this.context, com.qiyukf.unicorn.m.a.a().b().k(), false), null, null, null);
-                    a(!this.d.getText().toString().isEmpty() || this.g.getSelectedList().size() > 0);
-                }
-                a(ahVar.d().d());
-                this.b.setOnClickListener(new View.OnClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.1
-                    @Override // android.view.View.OnClickListener
-                    public final void onClick(View view) {
-                        if (e.this.b.isSelected()) {
-                            return;
-                        }
-                        if (e.this.a(ahVar)) {
-                            e.a(e.this, 2);
-                        } else {
-                            com.qiyukf.unicorn.n.t.a(R.string.ysf_robot_evaluate_disable);
-                        }
-                    }
-                });
-                this.c.setOnClickListener(new View.OnClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.2
-                    @Override // android.view.View.OnClickListener
-                    public final void onClick(View view) {
-                        if (e.this.c.isSelected()) {
-                            return;
-                        }
-                        if (e.this.a(ahVar)) {
-                            e.a(e.this, 3);
-                        } else {
-                            com.qiyukf.unicorn.n.t.a(R.string.ysf_robot_evaluate_disable);
-                        }
-                    }
-                });
-                this.i.setOnClickListener(new View.OnClickListener() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.3
-                    @Override // android.view.View.OnClickListener
-                    public final void onClick(View view) {
-                        if (e.this.a(ahVar)) {
-                            com.qiyukf.unicorn.h.a.f.w wVar = new com.qiyukf.unicorn.h.a.f.w();
-                            wVar.b(ahVar.e());
-                            wVar.c(e.this.d.getText().toString());
-                            if (e.this.g.getSelectedList().iterator().hasNext()) {
-                                wVar.a((String) e.this.q.get(e.this.g.getSelectedList().iterator().next().intValue()));
-                            }
-                            com.qiyukf.unicorn.k.c.a(wVar, ((MsgViewHolderBase) e.this).message.getSessionId()).setCallback(new RequestCallbackWrapper<Void>() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.3.1
-                                @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
-                                public final /* synthetic */ void onResult(int i, Void r2, Throwable th) {
-                                    String string;
-                                    if (i == 200) {
-                                        if (((com.qiyukf.uikit.common.a.f) e.this).context != null) {
-                                            string = ((com.qiyukf.uikit.common.a.f) e.this).context.getString(R.string.ysf_thanks_feedback);
-                                        } else {
-                                            string = "thanks";
-                                        }
-                                        com.qiyukf.unicorn.n.t.a(string);
-                                        ahVar.d().b(0);
-                                        ahVar.d().a(e.this.d.getText().toString());
-                                        ((YsfService) NIMClient.getService(YsfService.class)).updateIMMessageStatus(((MsgViewHolderBase) e.this).message, true);
-                                        return;
-                                    }
-                                    com.qiyukf.unicorn.n.t.a(R.string.ysf_network_error);
-                                }
-                            });
-                            return;
-                        }
-                        com.qiyukf.unicorn.n.t.a(R.string.ysf_robot_evaluate_disable);
-                    }
-                });
-                this.d.addTextChangedListener(new TextWatcher() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.4
-                    @Override // android.text.TextWatcher
-                    public final void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                    }
-
-                    @Override // android.text.TextWatcher
-                    public final void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                    }
-
-                    @Override // android.text.TextWatcher
-                    public final void afterTextChanged(Editable editable) {
-                        String string = editable.toString();
-                        ahVar.d().a(string);
-                        e.this.a(!string.isEmpty() || e.this.g.getSelectedList().size() > 0);
-                    }
-                });
+        } catch (Throwable th) {
+            com.qiyukf.nimlib.log.c.b.a.d("SyncEventManager", "stopTrackEvent51 exception, isSuccess = " + zE + ", code = " + ((int) sH), th);
+        }
+        if (this.a) {
+            f.o();
+            f.l();
+            if (!aVar.e()) {
+                com.qiyukf.nimlib.log.c.b.a.I("SDK login sync data failed, disconnect link! code=" + ((int) aVar.h()));
+                f.o().k();
                 return;
             }
-        }
-        this.a.setVisibility(8);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void a(int i) {
-        ah ahVar = (ah) this.message.getAttachment();
-        if (i == 3 && ahVar.d().f()) {
-            this.q.clear();
-            if (ahVar.d().g() != null) {
-                this.q.addAll(Arrays.asList(ahVar.d().g()));
-            }
-            this.s.notifyDataChanged();
-            this.h.setVisibility(0);
-            this.d.setText(ahVar.d().e());
-            EditText editText = this.d;
-            editText.setSelection(editText.getText().toString().length());
-            this.d.setHint(ahVar.d().a(this.context));
+            com.qiyukf.nimlib.log.c.b.a.I("SDK login sync data succeed");
             return;
         }
-        this.h.setVisibility(8);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public boolean a(ah ahVar) {
-        if (ahVar.a() == 0) {
-            return false;
+        com.qiyukf.nimlib.plugin.interact.b.a().a(IMixPushInteract.class);
+        long j = ((g) aVar).j();
+        if (j == 0) {
+            com.qiyukf.nimlib.log.c.b.a.H("this is fake sync response in ui process");
+            return;
         }
-        String sessionId = this.message.getSessionId();
-        return ahVar.a() == com.qiyukf.unicorn.c.h().d(sessionId) || ahVar.a() == com.qiyukf.unicorn.c.h().h(sessionId);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void a(boolean z) {
-        this.i.setEnabled(z);
-        if (com.qiyukf.unicorn.m.a.a().c()) {
-            this.i.setTextColor(Color.parseColor(z ? com.qiyukf.unicorn.m.a.a().b().k() : com.qiyukf.unicorn.m.a.a().b().s().c()));
-        } else {
-            this.i.setTextColor(z ? Color.parseColor(com.qiyukf.unicorn.m.a.a().b().k()) : this.context.getResources().getColor(R.color.ysf_grey_999999));
+        com.qiyukf.nimlib.c.c(false);
+        if (aVar.e()) {
+            com.qiyukf.nimlib.biz.n.k(j);
+            com.qiyukf.nimlib.session.b.c.a().a(j);
         }
+        com.qiyukf.nimlib.log.c.b.a.H("SDK login sync data completed");
+        com.qiyukf.nimlib.c.B();
+        com.qiyukf.nimlib.i.b.a(LoginSyncStatus.SYNC_COMPLETED);
+        b();
+        a();
     }
 
-    public static /* synthetic */ void a(e eVar, final int i) {
-        eVar.b.setSelected(i == 2);
-        eVar.c.setSelected(i == 3);
-        final ah ahVar = (ah) eVar.message.getAttachment();
-        com.qiyukf.unicorn.h.a.f.v vVar = new com.qiyukf.unicorn.h.a.f.v();
-        vVar.a(ahVar.e());
-        vVar.a(i);
-        com.qiyukf.unicorn.k.c.a(vVar, eVar.message.getSessionId()).setCallback(new RequestCallbackWrapper<Void>() { // from class: com.qiyukf.unicorn.ui.viewholder.a.e.5
-            @Override // com.qiyukf.nimlib.sdk.RequestCallbackWrapper
-            public final /* synthetic */ void onResult(int i2, Void r2, Throwable th) {
-                if (i2 == 200) {
-                    ahVar.d().b(i);
-                    ((YsfService) NIMClient.getService(YsfService.class)).updateIMMessageStatus(((MsgViewHolderBase) e.this).message, false);
-                    if (i == 2 || !e.this.a(ahVar)) {
-                        return;
-                    }
-                    if (ahVar.d().f()) {
-                        e.this.a(i);
-                    } else {
-                        e.k(e.this);
-                    }
-                    e.this.getAdapter().b().c();
-                    return;
+    private void a() {
+        if (!com.qiyukf.nimlib.c.P()) {
+            com.qiyukf.nimlib.log.c.b.a.H("sync superTeam member disable");
+            return;
+        }
+        ArrayList<SuperTeam> arrayListQueryAllSuperTeams = SuperTeamDBHelper.queryAllSuperTeams();
+        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList2 = new ArrayList();
+        ArrayList arrayList3 = new ArrayList();
+        if (TextUtils.isEmpty(com.qiyukf.nimlib.c.q())) {
+            return;
+        }
+        for (SuperTeam superTeam : arrayListQueryAllSuperTeams) {
+            long jE = com.qiyukf.nimlib.biz.n.e(superTeam.getId());
+            if (jE == 0) {
+                arrayList3.add(superTeam.getId());
+            }
+            if (jE == 0 || ((com.qiyukf.nimlib.superteam.b) superTeam).d() > jE) {
+                if (superTeam.getMemberLimit() > 2000) {
+                    arrayList.add(new Pair(superTeam.getId(), Long.valueOf(jE)));
+                } else {
+                    arrayList2.add(new Pair(superTeam.getId(), Long.valueOf(jE)));
                 }
-                com.qiyukf.unicorn.n.t.a(R.string.ysf_network_error);
+            }
+        }
+        if (arrayList3.size() > 0 && SuperTeamDBHelper.clearTeamMembers(false, arrayList3) < 0) {
+            com.qiyukf.nimlib.log.c.b.a.H("clear super team member dirty data failed");
+            com.qiyukf.nimlib.i.b.b(false);
+            return;
+        }
+        com.qiyukf.nimlib.log.c.b.a.H("clear super team member dirty data, size =" + arrayList3.size() + " , data = " + arrayList3.toString());
+        List<Pair<String, Long>> listA = a(arrayList, arrayList2);
+        if (!listA.isEmpty()) {
+            a(listA, 0, 500);
+            com.qiyukf.nimlib.log.c.b.a.H("sync super team member info , request amount = " + listA.size() + " , data = " + listA.toString());
+            return;
+        }
+        com.qiyukf.nimlib.i.b.b(true);
+        com.qiyukf.nimlib.log.c.b.a.H("no need to sync super team member info ");
+    }
+
+    private static List<Pair<String, Long>> a(ArrayList<Pair<String, Long>> arrayList, ArrayList<Pair<String, Long>> arrayList2) {
+        int size = arrayList.size();
+        int size2 = arrayList2.size();
+        ArrayList arrayList3 = new ArrayList();
+        int i = 0;
+        int i2 = 0;
+        while (true) {
+            if (i >= size && i2 >= size2) {
+                return arrayList3;
+            }
+            int iMin = Math.min(size - i, 10);
+            if (i < size) {
+                int i3 = i + iMin;
+                arrayList3.addAll(arrayList.subList(i, i3));
+                i = i3;
+            }
+            int iMin2 = Math.min(size2 - i2, 500 - iMin);
+            if (i2 < size2) {
+                int i4 = i2 + iMin2;
+                arrayList3.addAll(arrayList2.subList(i2, i4));
+                i2 = i4;
+            }
+            int i5 = (500 - iMin2) - iMin;
+            for (int i6 = 0; i6 < i5; i6++) {
+                arrayList3.add(null);
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void a(final List<Pair<String, Long>> list, final int i, final int i2) {
+        int size;
+        if (list == null || i >= (size = list.size()) || i < 0 || i2 <= 0) {
+            return;
+        }
+        final int iMin = Math.min(size, i + i2);
+        List<Pair<String, Long>> listSubList = list.subList(i, iMin);
+        int iIndexOf = listSubList.indexOf(null);
+        if (iIndexOf != -1) {
+            listSubList = listSubList.subList(0, iIndexOf);
+        }
+        k.a().a(new com.qiyukf.nimlib.biz.g.b(new com.qiyukf.nimlib.biz.d.h.b(listSubList)) { // from class: com.qiyukf.nimlib.push.a.a.e.1
+            @Override // com.qiyukf.nimlib.biz.g.b, com.qiyukf.nimlib.biz.g.c
+            public final void a(com.qiyukf.nimlib.biz.e.a aVar) {
+                com.qiyukf.nimlib.log.c.b.a.H("sync super team, startIndex=" + i + ", stopIndex=" + iMin + ", code=" + ((int) aVar.h()));
+                e.this.a(list, iMin, i2);
             }
         });
-        if (i == 3 && ahVar.d().f()) {
-            eVar.h.setVisibility(0);
-        } else {
-            eVar.h.setVisibility(8);
-        }
     }
 
-    public static /* synthetic */ void k(e eVar) {
-        ah ahVar = (ah) eVar.message.getAttachment();
-        com.qiyukf.unicorn.h.a.f.w wVar = new com.qiyukf.unicorn.h.a.f.w();
-        wVar.b(ahVar.e());
-        wVar.c("");
-        com.qiyukf.unicorn.k.c.a(wVar, eVar.message.getSessionId());
+    private static void b() {
+        if (!com.qiyukf.nimlib.c.O()) {
+            com.qiyukf.nimlib.log.c.b.a.H("sync team member disable");
+            return;
+        }
+        ArrayList<Team> arrayListQueryAllTeams = TeamDBHelper.queryAllTeams();
+        HashMap map = new HashMap();
+        ArrayList arrayList = new ArrayList();
+        if (TextUtils.isEmpty(com.qiyukf.nimlib.c.q())) {
+            return;
+        }
+        for (Team team : arrayListQueryAllTeams) {
+            long jC = com.qiyukf.nimlib.biz.n.c(team.getId());
+            if (jC == 0) {
+                arrayList.add(team.getId());
+            }
+            if (jC == 0 || ((com.qiyukf.nimlib.team.d) team).d() > jC) {
+                map.put(team.getId(), Long.valueOf(jC));
+            }
+        }
+        if (arrayList.size() > 0 && TeamDBHelper.clearTeamMembers(false, arrayList) < 0) {
+            com.qiyukf.nimlib.log.c.b.a.H("clear team member dirty data failed");
+            com.qiyukf.nimlib.i.b.a(false);
+            return;
+        }
+        com.qiyukf.nimlib.log.c.b.a.H("clear team member dirty data, size =" + arrayList.size() + " , data = " + arrayList.toString());
+        if (map.size() > 0) {
+            k.a().a(new com.qiyukf.nimlib.biz.d.h.c(map), com.qiyukf.nimlib.biz.g.a.d);
+            com.qiyukf.nimlib.log.c.b.a.H("sync team member info , size = " + map.size() + " , data = " + map.toString());
+            return;
+        }
+        com.qiyukf.nimlib.i.b.a(true);
+        com.qiyukf.nimlib.log.c.b.a.H("no need to sync team member info ");
     }
 }
